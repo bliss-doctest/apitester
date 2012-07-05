@@ -1,1 +1,1 @@
-target/classes/META-INF/maven/de.devbliss.apitester/apitester/pom.properties
+target/**/*
