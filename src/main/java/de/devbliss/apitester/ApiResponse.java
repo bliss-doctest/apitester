@@ -22,7 +22,7 @@ public class ApiResponse {
     }
 
     /**
-     * Assumes that the payload of the response is valid JSON and tries to convert it to a given
+     * Assumes that the payload of the response is valid JSON and tries to convert it to the given
      * type.
      * 
      * @param type
