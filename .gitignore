@@ -1,3 +1,6 @@
 target/**/*
-
+target/*
 target/classes/META-INF/maven/de.devbliss.apitester/apitester/pom.xml
+
+release.properties
+pom.xml.releaseBackup
