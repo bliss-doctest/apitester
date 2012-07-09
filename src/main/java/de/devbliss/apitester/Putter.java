@@ -8,7 +8,6 @@ import org.apache.http.client.methods.HttpPut;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.PutFactory;
-import de.devbliss.apitester.factory.impl.DefaultPutFactory;
 
 /**
  * Contains static methods to perform PUT requests. If you want to make more requests in a series
@@ -19,10 +18,6 @@ import de.devbliss.apitester.factory.impl.DefaultPutFactory;
  * 
  */
 public class Putter {
-
-    public static PutFactory createDefaultPutFactory() {
-        return new DefaultPutFactory(); // TODO use gin
-    }
 
     public static ApiResponse put(URI uri) throws IOException {
         return put(uri, null, null, null);
@@ -60,11 +55,11 @@ public class Putter {
             throws IOException {
 
         if (putFactory == null) {
-            putFactory = createDefaultPutFactory();
+            putFactory = ApiTesterModule.createPutFactory();
         }
 
         if (testState == null) {
-            testState = new TestState();
+            testState = new TestState(ApiTesterModule.createHttpClient());
         }
 
         HttpPut request = putFactory.createPutRequest(uri, payload);

@@ -1,7 +1,8 @@
 package de.devbliss.apitester;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+
+import com.google.inject.Inject;
 
 /**
  * Currently, this only holds an instance of {@link HttpClient}. Use the same instance of this e.g.
@@ -13,5 +14,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
  */
 public class TestState {
 
-    public final HttpClient client = new DefaultHttpClient();
+    public final HttpClient client;
+
+    @Inject
+    public TestState(HttpClient httpClient) {
+        this.client = httpClient;
+    }
 }

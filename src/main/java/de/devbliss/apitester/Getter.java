@@ -7,7 +7,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import de.devbliss.apitester.factory.GetFactory;
-import de.devbliss.apitester.factory.impl.DefaultGetFactory;
 
 /**
  * Contains static methods to perform GET requests. If you want to make more requests in a series
@@ -18,10 +17,6 @@ import de.devbliss.apitester.factory.impl.DefaultGetFactory;
  * 
  */
 public class Getter {
-
-    public static GetFactory createDefaultGetFactory() {
-        return new DefaultGetFactory(); // TODO use gin
-    }
 
     public static ApiResponse get(URI uri) throws IOException {
         return get(uri, null, null);
@@ -39,11 +34,11 @@ public class Getter {
             throws IOException {
 
         if (getFactory == null) {
-            getFactory = createDefaultGetFactory();
+            getFactory = ApiTesterModule.createGetFactory();
         }
 
         if (testState == null) {
-            testState = new TestState();
+            testState = new TestState(ApiTesterModule.createHttpClient());
         }
 
         HttpGet request = getFactory.createGetRequest(uri);

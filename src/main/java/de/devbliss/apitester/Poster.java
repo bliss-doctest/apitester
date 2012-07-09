@@ -7,7 +7,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 
 import de.devbliss.apitester.factory.PostFactory;
-import de.devbliss.apitester.factory.impl.DefaultPostFactory;
 
 /**
  * Contains static methods to perform POST requests. If you want to make more requests in a series
@@ -18,10 +17,6 @@ import de.devbliss.apitester.factory.impl.DefaultPostFactory;
  * 
  */
 public class Poster {
-
-    public static PostFactory createDefaultPostFactory() {
-        return new DefaultPostFactory(); // TODO use gin module
-    }
 
     public static ApiResponse post(URI uri, Object payload) throws IOException {
         return post(uri, payload, null, null);
@@ -41,11 +36,11 @@ public class Poster {
             PostFactory postFactory) throws IOException {
 
         if (postFactory == null) {
-            postFactory = createDefaultPostFactory();
+            postFactory = ApiTesterModule.createPostFactory();
         }
 
         if (testState == null) {
-            testState = new TestState();
+            testState = new TestState(ApiTesterModule.createHttpClient());
         }
 
         HttpPost request = postFactory.createPostRequest(uri, payload);

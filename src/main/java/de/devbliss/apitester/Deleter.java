@@ -7,7 +7,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import de.devbliss.apitester.factory.DeleteFactory;
-import de.devbliss.apitester.factory.impl.DefaultDeleteFactory;
 
 /**
  * Contains static methods to perform DELETE requests. If you want to make more requests in a series
@@ -18,10 +17,6 @@ import de.devbliss.apitester.factory.impl.DefaultDeleteFactory;
  * 
  */
 public class Deleter {
-
-    public static DeleteFactory createDefaultDeleteFactory() {
-        return new DefaultDeleteFactory(); // TODO use gin
-    }
 
     public static ApiResponse delete(URI uri) throws IOException {
         return deleteWithPayload(uri, null, null, null);
@@ -60,11 +55,11 @@ public class Deleter {
             throws IOException {
 
         if (deleteFactory == null) {
-            deleteFactory = createDefaultDeleteFactory();
+            deleteFactory = ApiTesterModule.createDeleteFactory();
         }
 
         if (testState == null) {
-            testState = new TestState();
+            testState = new TestState(ApiTesterModule.createHttpClient());
         }
 
         HttpRequestBase request = null;

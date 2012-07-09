@@ -36,11 +36,11 @@ public class ApiTest {
      * of this framework will be used in this case.
      */
     public ApiTest() {
-        postFactory = Poster.createDefaultPostFactory();
-        getFactory = Getter.createDefaultGetFactory();
-        deleteFactory = Deleter.createDefaultDeleteFactory();
-        putFactory = Putter.createDefaultPutFactory();
-        testState = new TestState();
+        postFactory = ApiTesterModule.createPostFactory();
+        getFactory = ApiTesterModule.createGetFactory();
+        deleteFactory = ApiTesterModule.createDeleteFactory();
+        putFactory = ApiTesterModule.createPutFactory();
+        testState = new TestState(ApiTesterModule.createHttpClient());
     }
 
     /**
@@ -49,17 +49,19 @@ public class ApiTest {
      * @param postFactory
      * @param getFactory
      * @param deleteFactory
+     * @param testState
      */
     public ApiTest(
             DeleteFactory deleteFactory,
             GetFactory getFactory,
             PostFactory postFactory,
-            PutFactory putFactory) {
+            PutFactory putFactory,
+            TestState testState) {
         this.postFactory = postFactory;
         this.getFactory = getFactory;
         this.deleteFactory = deleteFactory;
         this.putFactory = putFactory;
-        testState = new TestState();
+        this.testState = testState;
     }
 
     /**
