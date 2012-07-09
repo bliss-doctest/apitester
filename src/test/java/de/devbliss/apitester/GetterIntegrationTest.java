@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
+import de.devbliss.apitester.factory.impl.DefaultGetFactory;
 
 /**
  * Tests the methods of {@link Getter} and its delegates against an embedded local instance of
@@ -51,5 +52,33 @@ public class GetterIntegrationTest {
         ApiTestUtil.assertNoContent(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertFalse(DummyDto.createSampleInstance().equals(result));
+    }
+
+    @Test
+    public void testGetOkWithOwnGetFactory() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        ApiResponse response = Getter.get(uri, new DefaultGetFactory());
+        ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
+    }
+
+    @Test
+    public void testGetOkWithOwnTestState() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        ApiResponse response = Getter.get(uri, new TestState(ApiTesterModule.createHttpClient()));
+        ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
+    }
+
+    @Test
+    public void testGetOkWithOwnGetFactoryAndTestState() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        TestState testState = new TestState(ApiTesterModule.createHttpClient());
+        ApiResponse response = Getter.get(uri, testState, new DefaultGetFactory());
+        ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
     }
 }
