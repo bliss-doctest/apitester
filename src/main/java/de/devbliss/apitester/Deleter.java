@@ -19,37 +19,37 @@ import de.devbliss.apitester.factory.DeleteFactory;
 public class Deleter {
 
     public static ApiResponse delete(URI uri) throws IOException {
-        return deleteWithPayload(uri, null, null, null);
+        return delete(uri, null, null, null);
     }
 
     public static ApiResponse delete(URI uri, DeleteFactory deleteFactory) throws IOException {
-        return deleteWithPayload(uri, null, deleteFactory, null);
+        return delete(uri, null, deleteFactory, null);
     }
 
     public static ApiResponse delete(URI uri, TestState testState) throws IOException {
-        return deleteWithPayload(uri, testState, null, null);
+        return delete(uri, testState, null, null);
     }
 
     public static ApiResponse delete(URI uri, TestState testState, DeleteFactory deleteFactory)
             throws IOException {
-        return deleteWithPayload(uri, testState, deleteFactory, null);
+        return delete(uri, testState, deleteFactory, null);
     }
 
-    public static ApiResponse deleteWithPayload(URI uri, Object payload) throws IOException {
-        return deleteWithPayload(uri, null, null, payload);
+    public static ApiResponse delete(URI uri, Object payload) throws IOException {
+        return delete(uri, null, null, payload);
     }
 
-    public static ApiResponse deleteWithPayload(URI uri, Object payload, DeleteFactory deleteFactory)
+    public static ApiResponse delete(URI uri, Object payload, DeleteFactory deleteFactory)
             throws IOException {
-        return deleteWithPayload(uri, null, deleteFactory, payload);
+        return delete(uri, null, deleteFactory, payload);
     }
 
-    public static ApiResponse deleteWithPayload(URI uri, Object payload, TestState testState)
+    public static ApiResponse delete(URI uri, Object payload, TestState testState)
             throws IOException {
-        return deleteWithPayload(uri, testState, null, payload);
+        return delete(uri, testState, null, payload);
     }
 
-    public static ApiResponse deleteWithPayload(URI uri, TestState testState,
+    public static ApiResponse delete(URI uri, TestState testState,
             DeleteFactory deleteFactory,
             Object payload)
             throws IOException {

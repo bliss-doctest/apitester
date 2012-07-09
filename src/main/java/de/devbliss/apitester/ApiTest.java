@@ -102,7 +102,7 @@ public class ApiTest {
     }
 
     public ApiResponse delete(URI uri, Object payload) throws IOException {
-        return Deleter.deleteWithPayload(uri, testState, deleteFactory, payload);
+        return Deleter.delete(uri, testState, deleteFactory, payload);
     }
 
     public ApiResponse put(URI uri) throws IOException {

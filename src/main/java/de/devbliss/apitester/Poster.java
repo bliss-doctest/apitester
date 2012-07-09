@@ -18,6 +18,18 @@ import de.devbliss.apitester.factory.PostFactory;
  */
 public class Poster {
 
+    public static ApiResponse post(URI uri) throws IOException {
+        return post(uri, null, null, null);
+    }
+
+    public static ApiResponse post(URI uri, PostFactory postFactory) throws IOException {
+        return post(uri, null, null, postFactory);
+    }
+
+    public static ApiResponse post(URI uri, TestState testState) throws IOException {
+        return post(uri, null, testState, null);
+    }
+
     public static ApiResponse post(URI uri, Object payload) throws IOException {
         return post(uri, payload, null, null);
     }
