@@ -9,7 +9,7 @@
 
     <groupId>de.devbliss.apitester</groupId>
     <artifactId>apitester</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <description>bla TODO</description>
     <url>https://github.com/devbliss/apitester</url>
     <organization>
