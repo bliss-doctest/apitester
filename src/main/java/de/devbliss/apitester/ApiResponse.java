@@ -2,6 +2,7 @@ package de.devbliss.apitester;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.codehaus.jackson.type.TypeReference;
 
 import com.google.gson.Gson;
 
@@ -33,6 +34,10 @@ public class ApiResponse {
      */
     public <DTO> DTO payloadJsonAs(Class<DTO> type) {
         return new Gson().fromJson(payload, type);
+    }
+
+    public <DTO> DTO payloadJsonAs(TypeReference<DTO> typeReference) {
+        return new Gson().fromJson(payload, typeReference.getType());
     }
 
     /**
