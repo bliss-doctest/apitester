@@ -1,13 +1,13 @@
 package de.devbliss.apitester;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 
 /**
  * Some helper methods for api testing.
@@ -33,7 +33,7 @@ public class ApiTestUtil {
      * @param response
      */
     public static void assertOk(ApiResponse response) {
-        assertEquals(HttpStatus.SC_OK, response.httpStatus);
+        assertTrue(response.isStatusOk());
     }
 
     /**
@@ -42,7 +42,7 @@ public class ApiTestUtil {
      * @param response
      */
     public static void assertCreated(ApiResponse response) {
-        assertEquals(HttpStatus.SC_CREATED, response.httpStatus);
+        assertTrue(response.isStatusCreated());
     }
 
     /**
@@ -51,7 +51,7 @@ public class ApiTestUtil {
      * @param response
      */
     public static void assertNoContent(ApiResponse response) {
-        assertEquals(HttpStatus.SC_NO_CONTENT, response.httpStatus);
+        assertTrue(response.isStatusNoContent());
     }
 
     /**
@@ -60,7 +60,7 @@ public class ApiTestUtil {
      * @param response
      */
     public static void assertBadRequest(ApiResponse response) {
-        assertEquals(HttpStatus.SC_BAD_REQUEST, response.httpStatus);
+        assertTrue(response.isStatusBadRequest());
     }
 
     /**
@@ -68,8 +68,8 @@ public class ApiTestUtil {
      * 
      * @param response
      */
-    public static void assertAuthenticationRequired(ApiResponse response) {
-        assertEquals(HttpStatus.SC_UNAUTHORIZED, response.httpStatus);
+    public static void assertUnauthorized(ApiResponse response) {
+        assertTrue(response.isStatusUnauthorized());
     }
 
     /**
@@ -78,7 +78,7 @@ public class ApiTestUtil {
      * @param response
      */
     public static void assertForbidden(ApiResponse response) {
-        assertEquals(HttpStatus.SC_FORBIDDEN, response.httpStatus);
+        assertTrue(response.isStatusForbidden());
     }
 
     /**
@@ -87,7 +87,7 @@ public class ApiTestUtil {
      * @param response
      */
     public static void assertNotFound(ApiResponse response) {
-        assertEquals(HttpStatus.SC_NOT_FOUND, response.httpStatus);
+        assertTrue(response.isStatusNotFound());
     }
 
 
