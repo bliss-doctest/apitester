@@ -19,7 +19,34 @@ import de.devbliss.apitester.factory.PutFactory;
  * You may use this either as superclass for your own tests or instantiate it within your tests if
  * you need a different superclass for whatever reason.
  * 
- * @author hschuetz
+ * <h1>Instantiation</h1>
+ * <ul>
+ * <li>
+ * If you want to instantiate this class and use the <b>default factories</b>, just make:
+ * <code><br/>ApiTest api = new ApiTest();</code></li><br/>
+ * <li>
+ * If you want to instantiate this class and use <b>specific factories</b> (like mocks for example),
+ * just make: <code>
+ * <br/>ApiTest api = new ApiTest();
+ * <br/>api.setGetFactory(new SpecificGetFactory());
+ * </code></li><br/>
+ * <li>
+ * If you use <b>Guice</b> and want to inject this class, there are two use cases:
+ * <ul>
+ * <li>if you need the <b>default factories</b>, you do not have to do anything since Guice is going
+ * to use the default constructor of {@link ApiTest}.</li>
+ * <li>if you need some <b>specifics factories</b>, you just have to bind these factories in your
+ * Guice module like this: <code>
+ * <br/>bind(DeleteFactory.class).annotatedWith(Names.named("deleteFactory")).to(
+                DeleteImpl.class);
+ * </code> <br/>
+ * Guice will then find this binding and call the corresponding setter function (annotated with
+ * <i>@Injected(optional=true)</i>).</li>
+ * </ul>
+ * </li>
+ * </ul>
+ * 
+ * @author hschuetz, mreinwarth, bmary
  * 
  */
 public class ApiTest {
@@ -32,6 +59,31 @@ public class ApiTest {
 
     public enum HTTP_REQUEST {
         POST, GET, PUT, DELETE;
+    }
+
+    @Inject(optional = true)
+    public void setDeleteFactory(@Named("deleteFactory") DeleteFactory deleteFactory) {
+        this.deleteFactory = deleteFactory;
+    }
+
+    @Inject(optional = true)
+    public void setGetFactory(@Named("getFactory") GetFactory getFactory) {
+        this.getFactory = getFactory;
+    }
+
+    @Inject(optional = true)
+    public void setPostFactory(@Named("postFactory") PostFactory postFactory) {
+        this.postFactory = postFactory;
+    }
+
+    @Inject(optional = true)
+    public void setPutFactory(@Named("putFactory") PutFactory putFactory) {
+        this.putFactory = putFactory;
+    }
+
+    @Inject(optional = true)
+    public void setTestState(@Named("testState") TestState testState) {
+        this.testState = testState;
     }
 
     private TestState getTestState() {
@@ -68,36 +120,6 @@ public class ApiTest {
             setPutFactory(ApiTesterModule.createPutFactory());
         }
         return putFactory;
-    }
-
-    @Inject(optional = true)
-    public void setDeleteFactory(@Named("deleteFactory") DeleteFactory deleteFactory) {
-        System.out.println("--- --- setDeleteFactory");
-        this.deleteFactory = deleteFactory;
-    }
-
-    @Inject(optional = true)
-    public void setGetFactory(@Named("getFactory") GetFactory getFactory) {
-        System.out.println("--- --- setGetFactory");
-        this.getFactory = getFactory;
-    }
-
-    @Inject(optional = true)
-    public void setPostFactory(@Named("postFactory") PostFactory postFactory) {
-        System.out.println("--- --- setPostFactory");
-        this.postFactory = postFactory;
-    }
-
-    @Inject(optional = true)
-    public void setPutFactory(@Named("putFactory") PutFactory putFactory) {
-        System.out.println("--- --- setPutFactory");
-        this.putFactory = putFactory;
-    }
-
-    @Inject(optional = true)
-    public void setTestState(@Named("testState") TestState testState) {
-        System.out.println("--- --- setTestState");
-        this.testState = testState;
     }
 
     /**
