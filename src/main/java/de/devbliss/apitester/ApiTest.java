@@ -37,7 +37,7 @@ import de.devbliss.apitester.factory.PutFactory;
  * to use the default constructor of {@link ApiTest}.</li>
  * <li>if you need some <b>specifics factories</b>, you just have to bind these factories in your
  * Guice module like this: <code>
- * <br/>bind(DeleteFactory.class).annotatedWith(Names.named("deleteFactory")).to(
+ * <br/>bind(DeleteFactory.class).annotatedWith(Names.named(ApiTest.{@link #DELETE_FACTORY})).to(
                 DeleteImpl.class);
  * </code> <br/>
  * Guice will then find this binding and call the corresponding setter function (annotated with
@@ -51,6 +51,12 @@ import de.devbliss.apitester.factory.PutFactory;
  */
 public class ApiTest {
 
+    public static final String GET_FACTORY = "getFactory";
+    public static final String DELETE_FACTORY = "deleteFactory";
+    public static final String POST_FACTORY = "postFactory";
+    public static final String PUT_FACTORY = "putFactory";
+    public static final String TEST_STATE = "testState";
+
     private GetFactory getFactory;
     private PostFactory postFactory;
     private DeleteFactory deleteFactory;
@@ -62,27 +68,27 @@ public class ApiTest {
     }
 
     @Inject(optional = true)
-    public void setDeleteFactory(@Named("deleteFactory") DeleteFactory deleteFactory) {
+    public void setDeleteFactory(@Named(DELETE_FACTORY) DeleteFactory deleteFactory) {
         this.deleteFactory = deleteFactory;
     }
 
     @Inject(optional = true)
-    public void setGetFactory(@Named("getFactory") GetFactory getFactory) {
+    public void setGetFactory(@Named(GET_FACTORY) GetFactory getFactory) {
         this.getFactory = getFactory;
     }
 
     @Inject(optional = true)
-    public void setPostFactory(@Named("postFactory") PostFactory postFactory) {
+    public void setPostFactory(@Named(POST_FACTORY) PostFactory postFactory) {
         this.postFactory = postFactory;
     }
 
     @Inject(optional = true)
-    public void setPutFactory(@Named("putFactory") PutFactory putFactory) {
+    public void setPutFactory(@Named(PUT_FACTORY) PutFactory putFactory) {
         this.putFactory = putFactory;
     }
 
     @Inject(optional = true)
-    public void setTestState(@Named("testState") TestState testState) {
+    public void setTestState(@Named(TEST_STATE) TestState testState) {
         this.testState = testState;
     }
 
