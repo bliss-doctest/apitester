@@ -152,7 +152,13 @@ public class ApiTestUnitTest {
     }
 
     private ApiTest createApiTest() {
-        return new ApiTest(deleteFactory, getFactory, postFactory, putFactory, testState);
+        ApiTest apiTest = new ApiTest();
+        apiTest.setDeleteFactory(deleteFactory);
+        apiTest.setGetFactory(getFactory);
+        apiTest.setPutFactory(putFactory);
+        apiTest.setPostFactory(postFactory);
+        apiTest.setTestState(testState);
+        return apiTest;
     }
 
 }

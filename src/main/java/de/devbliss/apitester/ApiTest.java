@@ -3,6 +3,9 @@ package de.devbliss.apitester;
 import java.io.IOException;
 import java.net.URI;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.PostFactory;
@@ -21,46 +24,79 @@ import de.devbliss.apitester.factory.PutFactory;
  */
 public class ApiTest {
 
-    private final GetFactory getFactory;
-    private final PostFactory postFactory;
-    private final DeleteFactory deleteFactory;
-    private final PutFactory putFactory;
-    private final TestState testState;
+    private GetFactory getFactory;
+    private PostFactory postFactory;
+    private DeleteFactory deleteFactory;
+    private PutFactory putFactory;
+    private TestState testState;
 
     public enum HTTP_REQUEST {
         POST, GET, PUT, DELETE;
     }
 
-    /**
-     * Easy constructor if you do not want to provide own factory implementations. The default ones
-     * of this framework will be used in this case.
-     */
-    public ApiTest() {
-        postFactory = ApiTesterModule.createPostFactory();
-        getFactory = ApiTesterModule.createGetFactory();
-        deleteFactory = ApiTesterModule.createDeleteFactory();
-        putFactory = ApiTesterModule.createPutFactory();
-        testState = new TestState(ApiTesterModule.createHttpClient());
+    private TestState getTestState() {
+        if (testState == null) {
+            setTestState(new TestState(ApiTesterModule.createHttpClient()));
+        }
+        return testState;
     }
 
-    /**
-     * Advanced constructor if you feel the desire to provide your own factory implementations.
-     * 
-     * @param postFactory
-     * @param getFactory
-     * @param deleteFactory
-     * @param testState
-     */
-    public ApiTest(
-            DeleteFactory deleteFactory,
-            GetFactory getFactory,
-            PostFactory postFactory,
-            PutFactory putFactory,
-            TestState testState) {
-        this.postFactory = postFactory;
-        this.getFactory = getFactory;
+    private DeleteFactory getDeleteFactory() {
+        if (deleteFactory == null) {
+            setDeleteFactory(ApiTesterModule.createDeleteFactory());
+        }
+
+        return deleteFactory;
+    }
+
+    private GetFactory getGetFactory() {
+        if (getFactory == null) {
+            setGetFactory(ApiTesterModule.createGetFactory());
+        }
+        return getFactory;
+    }
+
+    private PostFactory getPostFactory() {
+        if (postFactory == null) {
+            setPostFactory(ApiTesterModule.createPostFactory());
+        }
+        return postFactory;
+    }
+
+    private PutFactory getPutFactory() {
+        if (putFactory == null) {
+            setPutFactory(ApiTesterModule.createPutFactory());
+        }
+        return putFactory;
+    }
+
+    @Inject(optional = true)
+    public void setDeleteFactory(@Named("deleteFactory") DeleteFactory deleteFactory) {
+        System.out.println("--- --- setDeleteFactory");
         this.deleteFactory = deleteFactory;
+    }
+
+    @Inject(optional = true)
+    public void setGetFactory(@Named("getFactory") GetFactory getFactory) {
+        System.out.println("--- --- setGetFactory");
+        this.getFactory = getFactory;
+    }
+
+    @Inject(optional = true)
+    public void setPostFactory(@Named("postFactory") PostFactory postFactory) {
+        System.out.println("--- --- setPostFactory");
+        this.postFactory = postFactory;
+    }
+
+    @Inject(optional = true)
+    public void setPutFactory(@Named("putFactory") PutFactory putFactory) {
+        System.out.println("--- --- setPutFactory");
         this.putFactory = putFactory;
+    }
+
+    @Inject(optional = true)
+    public void setTestState(@Named("testState") TestState testState) {
+        System.out.println("--- --- setTestState");
         this.testState = testState;
     }
 
@@ -74,7 +110,7 @@ public class ApiTest {
      * @throws IOException
      */
     public ApiResponse post(URI uri, Object payload) throws IOException {
-        return Poster.post(uri, payload, testState, postFactory);
+        return Poster.post(uri, payload, getTestState(), getPostFactory());
     }
 
     /**
@@ -86,7 +122,7 @@ public class ApiTest {
      * @throws IOException
      */
     public ApiResponse get(URI uri) throws IOException {
-        return Getter.get(uri, testState, getFactory);
+        return Getter.get(uri, getTestState(), getGetFactory());
     }
 
     /**
@@ -98,18 +134,18 @@ public class ApiTest {
      * @throws IOException
      */
     public ApiResponse delete(URI uri) throws IOException {
-        return Deleter.delete(uri, testState, deleteFactory);
+        return Deleter.delete(uri, getTestState(), getDeleteFactory());
     }
 
     public ApiResponse delete(URI uri, Object payload) throws IOException {
-        return Deleter.delete(uri, testState, deleteFactory, payload);
+        return Deleter.delete(uri, getTestState(), getDeleteFactory(), payload);
     }
 
     public ApiResponse put(URI uri) throws IOException {
-        return Putter.put(uri, testState, putFactory);
+        return Putter.put(uri, getTestState(), getPutFactory());
     }
 
     public ApiResponse put(URI uri, Object payload) throws IOException {
-        return Putter.put(uri, testState, putFactory, payload);
+        return Putter.put(uri, getTestState(), getPutFactory(), payload);
     }
 }
