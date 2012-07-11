@@ -5,5 +5,4 @@ release.properties
 ## eclipse settings
 *.classpath
 *.prefs
-/bin
 
