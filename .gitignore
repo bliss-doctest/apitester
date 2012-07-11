@@ -1,6 +1,8 @@
-target/**/*
-target/*
-target/classes/META-INF/maven/de.devbliss.apitester/apitester/pom.xml
-
+/target
 release.properties
-pom.xml.releaseBackup
+
+#################
+## eclipse settings
+*.classpath
+*.prefs
+
