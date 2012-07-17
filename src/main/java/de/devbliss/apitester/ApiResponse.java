@@ -50,7 +50,7 @@ public class ApiResponse {
     }
 
     /**
-     * Tells whether HTTP status is "201 CREATED".
+     * Tells whether HTTP status is "204 NO CONTENT".
      * 
      * @return
      */
@@ -59,7 +59,7 @@ public class ApiResponse {
     }
 
     /**
-     * Tells whether HTTP status is "204 NO CONTENT".
+     * Tells whether HTTP status is "201 CREATED".
      * 
      * @return
      */
