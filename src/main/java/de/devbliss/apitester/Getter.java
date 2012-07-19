@@ -38,7 +38,7 @@ public class Getter {
         }
 
         if (testState == null) {
-            testState = new TestState(ApiTesterModule.createHttpClient());
+            testState = ApiTesterModule.createTestState();
         }
 
         HttpGet request = getFactory.createGetRequest(uri);

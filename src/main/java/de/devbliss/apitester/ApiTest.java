@@ -94,7 +94,7 @@ public class ApiTest {
 
     private TestState getTestState() {
         if (testState == null) {
-            setTestState(new TestState(ApiTesterModule.createHttpClient()));
+            setTestState(ApiTesterModule.createTestState());
         }
         return testState;
     }

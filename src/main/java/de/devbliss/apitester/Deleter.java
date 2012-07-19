@@ -59,7 +59,7 @@ public class Deleter {
         }
 
         if (testState == null) {
-            testState = new TestState(ApiTesterModule.createHttpClient());
+            testState = ApiTesterModule.createTestState();
         }
 
         HttpRequestBase request = null;

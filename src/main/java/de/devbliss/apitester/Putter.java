@@ -59,7 +59,7 @@ public class Putter {
         }
 
         if (testState == null) {
-            testState = new TestState(ApiTesterModule.createHttpClient());
+            testState = ApiTesterModule.createTestState();
         }
 
         HttpPut request = putFactory.createPutRequest(uri, payload);

@@ -52,7 +52,7 @@ public class Poster {
         }
 
         if (testState == null) {
-            testState = new TestState(ApiTesterModule.createHttpClient());
+            testState = ApiTesterModule.createTestState();
         }
 
         HttpPost request = postFactory.createPostRequest(uri, payload);

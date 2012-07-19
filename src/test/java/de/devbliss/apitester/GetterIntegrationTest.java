@@ -66,7 +66,7 @@ public class GetterIntegrationTest {
     @Test
     public void testGetOkWithOwnTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        ApiResponse response = Getter.get(uri, new TestState(ApiTesterModule.createHttpClient()));
+        ApiResponse response = Getter.get(uri, ApiTesterModule.createTestState());
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(DummyDto.createSampleInstance(), result);
@@ -75,7 +75,7 @@ public class GetterIntegrationTest {
     @Test
     public void testGetOkWithOwnGetFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = new TestState(ApiTesterModule.createHttpClient());
+        TestState testState = ApiTesterModule.createTestState();
         ApiResponse response = Getter.get(uri, testState, new DefaultGetFactory());
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);

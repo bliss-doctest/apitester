@@ -62,7 +62,7 @@ public class PosterIntegrationTest {
     @Test
     public void testPostOkWithOwnTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = new TestState(ApiTesterModule.createHttpClient());
+        TestState testState = ApiTesterModule.createTestState();
         ApiResponse response = Poster.post(uri, testState);
         ApiTestUtil.assertOk(response);
     }
@@ -70,7 +70,7 @@ public class PosterIntegrationTest {
     @Test
     public void testPostOkWithOwnPostFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = new TestState(ApiTesterModule.createHttpClient());
+        TestState testState = ApiTesterModule.createTestState();
         ApiResponse response = Poster.post(uri, new DefaultPostFactory(), testState);
         ApiTestUtil.assertOk(response);
     }
@@ -89,7 +89,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithPayloadAndOwnTestState() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = new TestState(ApiTesterModule.createHttpClient());
+        TestState testState = ApiTesterModule.createTestState();
         ApiResponse response = Poster.post(uri, payload, testState);
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
@@ -100,7 +100,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithPayloadAndOwnPostFactoryAndTestState() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = new TestState(ApiTesterModule.createHttpClient());
+        TestState testState = ApiTesterModule.createTestState();
         ApiResponse response = Poster.post(uri, payload, testState, new DefaultPostFactory());
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);

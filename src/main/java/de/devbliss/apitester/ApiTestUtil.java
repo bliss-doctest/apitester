@@ -4,8 +4,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 
@@ -95,6 +98,12 @@ public class ApiTestUtil {
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         HttpEntity entity = httpResponse.getEntity();
         String rawResponse = entity != null ? IOUtils.toString(entity.getContent()) : "";
-        return new ApiResponse(httpStatus, rawResponse);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        for (Header header : httpResponse.getAllHeaders()) {
+            headers.put(header.getName(), header.getValue());
+        }
+
+        return new ApiResponse(httpStatus, rawResponse, headers);
     }
 }
