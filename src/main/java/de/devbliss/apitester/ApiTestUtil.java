@@ -104,6 +104,6 @@ public class ApiTestUtil {
             headers.put(header.getName(), header.getValue());
         }
 
-        return new ApiResponse(httpStatus, rawResponse, headers);
+        return new ApiResponse(httpStatus, httpResponse.getStatusLine().getReasonPhrase(), rawResponse, headers);
     }
 }

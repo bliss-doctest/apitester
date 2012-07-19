@@ -28,7 +28,7 @@ public class GetterIntegrationTest {
     @Before
     public void setUp() throws Exception {
         server = new DummyApiServer();
-        server.start();
+        server.start(false);
     }
 
     @After

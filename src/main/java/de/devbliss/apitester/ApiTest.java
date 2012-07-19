@@ -92,7 +92,7 @@ public class ApiTest {
         this.testState = testState;
     }
 
-    private TestState getTestState() {
+    public TestState getTestState() {
         if (testState == null) {
             setTestState(ApiTesterModule.createTestState());
         }
@@ -175,5 +175,14 @@ public class ApiTest {
 
     public ApiResponse put(URI uri, Object payload) throws IOException {
         return Putter.put(uri, getTestState(), getPutFactory(), payload);
+    }
+
+    /**
+     * Shutdown, closing any open HTTP connections
+     */
+    public void shutdown() {
+        if (testState != null) {
+            testState.shutdown();
+        }
     }
 }

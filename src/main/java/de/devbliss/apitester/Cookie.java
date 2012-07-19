@@ -113,4 +113,17 @@ public class Cookie {
         result = 31 * result + (secure ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Cookie{" +
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                ", expires=" + expires +
+                ", path='" + path + '\'' +
+                ", domain='" + domain + '\'' +
+                ", httpOnly=" + httpOnly +
+                ", secure=" + secure +
+                '}';
+    }
 }

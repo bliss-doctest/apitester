@@ -25,12 +25,14 @@ import java.util.Map;
 public class ApiResponse {
 
     public final int httpStatus;
+    public final String error;
     public final String payload;
     public final Map<String, String> headers;
     private final Map<String, String> caseInsensitiveHeaders;
 
-    public ApiResponse(int httpStatus, String payload, Map<String, String> headers) {
+    public ApiResponse(int httpStatus, String error, String payload, Map<String, String> headers) {
         this.httpStatus = httpStatus;
+        this.error = error;
         this.payload = payload;
         this.headers = ImmutableMap.copyOf(headers);
         // Convert headers to lower case so they can be looked up in a case insensitive manner

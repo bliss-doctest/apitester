@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
@@ -53,7 +54,8 @@ public class ApiTestUnitTest {
         MockitoAnnotations.initMocks(this);
         when(response.getStatusLine()).thenReturn(statusLine);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
-        testState = new TestState(httpClient);
+        testState = new TestState(httpClient, null);
+        when(response.getAllHeaders()).thenReturn(new Header[] {});
     }
 
     @Test

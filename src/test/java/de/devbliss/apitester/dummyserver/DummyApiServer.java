@@ -5,12 +5,15 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import de.devbliss.apitester.ApiResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.jetty.server.Server;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Simple HTTP server using Jetty. Tries to find a free port on instanciation and is ready for
- * requests after {@link #start()} has been called. All requests are handled by
+ * requests after {@link #start(boolean)} has been called. All requests are handled by
  * {@link DummyRequestHandler}, so read its documentation for information on how requests are
  * handled.
  * 
@@ -28,14 +31,19 @@ public class DummyApiServer {
     private static final int MAX_PORT = 10000;
     private final int port;
     private Server server;
+    private DelegateHandler delegateHandler = new DelegateHandler();
 
     public DummyApiServer() {
         port = findFreePort();
     }
 
-    public void start() throws Exception {
+    public void start(boolean mocked) throws Exception {
         server = new Server(port);
-        server.setHandler(new DummyRequestHandler());
+        if (mocked) {
+            server.setHandler(delegateHandler);
+        } else {
+            server.setHandler(new DummyRequestHandler());
+        }
         server.start();
 
         new Thread(new Runnable() {
@@ -52,6 +60,10 @@ public class DummyApiServer {
 
     public void stop() throws Exception {
         server.stop();
+    }
+
+    public void setHandler(Handler handler) {
+        delegateHandler.setHandler(handler);
     }
 
     /**
@@ -76,7 +88,7 @@ public class DummyApiServer {
         return buildRequestUri(DummyRequestHandler.POST_PATH_PREFIX + desiredResponseCode);
     }
 
-    private URI buildRequestUri(String pathOnServer) throws URISyntaxException {
+    public URI buildRequestUri(String pathOnServer) throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("http");
         uriBuilder.setHost("localhost");

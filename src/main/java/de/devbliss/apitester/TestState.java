@@ -92,4 +92,10 @@ public class TestState {
         cookieStore.clear();
     }
 
+    /**
+     * Shutdown, closing any active HTTP connections
+     */
+    public void shutdown() {
+        client.getConnectionManager().shutdown();
+    }
 }
