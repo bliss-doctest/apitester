@@ -1,14 +1,12 @@
 package de.devbliss.apitester;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.codehaus.jackson.type.TypeReference;
 
 import com.google.gson.Gson;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -25,14 +23,17 @@ import java.util.Map;
 public class ApiResponse {
 
     public final int httpStatus;
-    public final String error;
+    /**
+     * Human readable reason for the status code, named as described in RFC2616
+     */
+    public final String reasonPhrase;
     public final String payload;
     public final Map<String, String> headers;
     private final Map<String, String> caseInsensitiveHeaders;
 
-    public ApiResponse(int httpStatus, String error, String payload, Map<String, String> headers) {
+    public ApiResponse(int httpStatus, String reasonPhrase, String payload, Map<String, String> headers) {
         this.httpStatus = httpStatus;
-        this.error = error;
+        this.reasonPhrase = reasonPhrase;
         this.payload = payload;
         this.headers = ImmutableMap.copyOf(headers);
         // Convert headers to lower case so they can be looked up in a case insensitive manner

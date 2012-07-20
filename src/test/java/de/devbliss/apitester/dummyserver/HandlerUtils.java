@@ -14,8 +14,8 @@ import java.net.URLEncoder;
 public class HandlerUtils {
     public static ApiResponse handleErrors(ApiResponse response) {
         if (response.httpStatus == 500) {
-            if (response.error.contains(":")) {
-                String[] error = response.error.split(":", 2);
+            if (response.reasonPhrase.contains(":")) {
+                String[] error = response.reasonPhrase.split(":", 2);
                 Throwable exception;
                 try {
                     Class<? extends Throwable> exceptionClass = (Class) Class.forName(error[0]);
