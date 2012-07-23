@@ -3,6 +3,7 @@ CHANGES
 
 develop
 -------
+- using junit-deps as dependency
 
 Version 0.5: 2012-07-20
 ----------------------

@@ -9,7 +9,7 @@
 
     <groupId>de.devbliss.apitester</groupId>
     <artifactId>apitester</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6.1-SNAPSHOT</version>
     <description>bla TODO</description>
     <url>https://github.com/devbliss/apitester</url>
     <organization>
@@ -36,8 +36,10 @@
         </dependency>
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <!-- junit-dep has all dependencies declared, rather than bundled (bundled
+                 causes massive classpath headaches) -->
+            <artifactId>junit-dep</artifactId>
+            <version>4.8.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
