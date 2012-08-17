@@ -46,7 +46,7 @@ import de.devbliss.apitester.factory.PutFactory;
  * </li>
  * </ul>
  * 
- * @author hschuetz, mreinwarth, bmary
+ * @author hschuetz, mreinwarth, bmary, mbankmann
  * 
  */
 public class ApiTest {
@@ -57,10 +57,10 @@ public class ApiTest {
     public static final String PUT_FACTORY = "putFactory";
     public static final String TEST_STATE = "testState";
 
-    private GetFactory getFactory;
-    private PostFactory postFactory;
-    private DeleteFactory deleteFactory;
-    private PutFactory putFactory;
+    private GetFactory getDefaultFactory;
+    private PostFactory postDefaultFactory;
+    private DeleteFactory deleteDefaultFactory;
+    private PutFactory putDefaultFactory;
     private TestState testState;
 
     public enum HTTP_REQUEST {
@@ -68,23 +68,23 @@ public class ApiTest {
     }
 
     @Inject(optional = true)
-    public void setDeleteFactory(@Named(DELETE_FACTORY) DeleteFactory deleteFactory) {
-        this.deleteFactory = deleteFactory;
+    public void setDefaultDeleteFactory(@Named(DELETE_FACTORY) DeleteFactory deleteFactory) {
+        this.deleteDefaultFactory = deleteFactory;
     }
 
     @Inject(optional = true)
-    public void setGetFactory(@Named(GET_FACTORY) GetFactory getFactory) {
-        this.getFactory = getFactory;
+    public void setDefaultGetFactory(@Named(GET_FACTORY) GetFactory getFactory) {
+        this.getDefaultFactory = getFactory;
     }
 
     @Inject(optional = true)
-    public void setPostFactory(@Named(POST_FACTORY) PostFactory postFactory) {
-        this.postFactory = postFactory;
+    public void setDefaultPostFactory(@Named(POST_FACTORY) PostFactory postFactory) {
+        this.postDefaultFactory = postFactory;
     }
 
     @Inject(optional = true)
-    public void setPutFactory(@Named(PUT_FACTORY) PutFactory putFactory) {
-        this.putFactory = putFactory;
+    public void setDefaultPutFactory(@Named(PUT_FACTORY) PutFactory putFactory) {
+        this.putDefaultFactory = putFactory;
     }
 
     @Inject(optional = true)
@@ -99,37 +99,38 @@ public class ApiTest {
         return testState;
     }
 
-    private DeleteFactory getDeleteFactory() {
-        if (deleteFactory == null) {
-            setDeleteFactory(ApiTesterModule.createDeleteFactory());
+    private DeleteFactory getDefaultDeleteFactory() {
+        if (deleteDefaultFactory == null) {
+            setDefaultDeleteFactory(ApiTesterModule.createDeleteFactory());
         }
 
-        return deleteFactory;
+        return deleteDefaultFactory;
     }
 
-    private GetFactory getGetFactory() {
-        if (getFactory == null) {
-            setGetFactory(ApiTesterModule.createGetFactory());
+    private GetFactory getDefaultGetFactory() {
+        if (getDefaultFactory == null) {
+            setDefaultGetFactory(ApiTesterModule.createGetFactory());
         }
-        return getFactory;
+        return getDefaultFactory;
     }
 
-    private PostFactory getPostFactory() {
-        if (postFactory == null) {
-            setPostFactory(ApiTesterModule.createPostFactory());
+    private PostFactory getDefaultPostFactory() {
+        if (postDefaultFactory == null) {
+            setDefaultPostFactory(ApiTesterModule.createPostFactory());
         }
-        return postFactory;
+        return postDefaultFactory;
     }
 
-    private PutFactory getPutFactory() {
-        if (putFactory == null) {
-            setPutFactory(ApiTesterModule.createPutFactory());
+    private PutFactory getDefaultPutFactory() {
+        if (putDefaultFactory == null) {
+            setDefaultPutFactory(ApiTesterModule.createPutFactory());
         }
-        return putFactory;
+        return putDefaultFactory;
     }
 
     /**
-     * Performs a post request using the {@link PostFactory} and the {@link TestState} of this
+     * Performs a post request using the default {@link PostFactory} and the {@link TestState} of
+     * this
      * instance.
      * 
      * @param uri
@@ -138,7 +139,22 @@ public class ApiTest {
      * @throws IOException
      */
     public ApiResponse post(URI uri, Object payload) throws IOException {
-        return Poster.post(uri, payload, getTestState(), getPostFactory());
+        return post(uri, payload, getDefaultPostFactory());
+    }
+    
+    /**
+     * Performs a post request using the given {@link PostFactory} and the {@link TestState} of
+     * this instance. The {@link PostFactory} will be used for this call only. If you want to
+     * configure a new default one use {@link #setDefaultPostFactory(PostFactory)}
+     * 
+     * @param uri
+     * @param postFactory
+     * @param payload
+     * @return
+     * @throws IOException
+     */
+    public ApiResponse post(URI uri, Object payload, PostFactory postFactory) throws IOException {
+        return Poster.post(uri, payload, getTestState(), postFactory);
     }
 
     /**
@@ -150,7 +166,20 @@ public class ApiTest {
      * @throws IOException
      */
     public ApiResponse get(URI uri) throws IOException {
-        return Getter.get(uri, getTestState(), getGetFactory());
+        return get(uri, getDefaultGetFactory());
+    }
+
+    /**
+     * Performs a get request using the given {@link GetFactory} and the {@link TestState} of this
+     * instance. The {@link GetFactory} will be used for this call only. If you want to
+     * configure a new default one use {@link #setDefaultGetFactory(GetFactory)}.
+     * 
+     * @param uri
+     * @return
+     * @throws IOException
+     */
+    public ApiResponse get(URI uri, GetFactory getFactory) throws IOException {
+        return Getter.get(uri, getTestState(), getFactory);
     }
 
     /**
@@ -162,19 +191,78 @@ public class ApiTest {
      * @throws IOException
      */
     public ApiResponse delete(URI uri) throws IOException {
-        return Deleter.delete(uri, getTestState(), getDeleteFactory());
+        return delete(uri, null, getDefaultDeleteFactory());
     }
 
+    /**
+     * Performs a delete request using the given {@link DeleteFactory} and the {@link TestState} of
+     * this instance. The payload is not forbidden in the HTTP specification and so its supported
+     * here.
+     * 
+     * @param uri
+     * @param payload
+     * @return
+     * @throws IOException
+     */
     public ApiResponse delete(URI uri, Object payload) throws IOException {
-        return Deleter.delete(uri, getTestState(), getDeleteFactory(), payload);
+        return delete(uri, payload, getDefaultDeleteFactory());
     }
 
+    /**
+     * Performs a delete request using the given {@link DeleteFactory} and the {@link TestState} of
+     * this instance. The payload is not forbidden in the HTTP specification and so its supported
+     * here. The {@link DeleteFactory} will be used for this call only. If you want to
+     * configure a new default one use {@link #setDefaultDeleteFactory(DeleteFactory)}.
+     * 
+     * @param uri
+     * @param payload
+     * @param deleteFactory
+     * @return
+     * @throws IOException
+     */
+    public ApiResponse delete(URI uri, Object payload, DeleteFactory deleteFactory)
+            throws IOException {
+        return Deleter.delete(uri, getTestState(), deleteFactory, payload);
+    }
+
+    /**
+     * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
+     * instance.
+     * 
+     * @param uri
+     * @return
+     * @throws IOException
+     */
     public ApiResponse put(URI uri) throws IOException {
-        return Putter.put(uri, getTestState(), getPutFactory());
+        return put(uri, null, getDefaultPutFactory());
     }
 
+    /**
+     * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
+     * instance with the given payload.
+     * 
+     * @param uri
+     * @param payload
+     * @return
+     * @throws IOException
+     */
     public ApiResponse put(URI uri, Object payload) throws IOException {
-        return Putter.put(uri, getTestState(), getPutFactory(), payload);
+        return put(uri, payload, getDefaultPutFactory());
+    }
+
+    /**
+     * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
+     * instance with the given payload. The {@link PutFactory} will be used for this call only. If
+     * you want to configure a new default one use {@link #setDefaultDeleteFactory(PutFactory)}.
+     * 
+     * @param uri
+     * @param putFactory
+     * @param payload
+     * @return
+     * @throws IOException
+     */
+    public ApiResponse put(URI uri, Object payload, PutFactory putFactory) throws IOException {
+        return Putter.put(uri, getTestState(), putFactory, payload);
     }
 
     /**

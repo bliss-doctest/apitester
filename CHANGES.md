@@ -4,6 +4,7 @@ CHANGES
 develop
 -------
 - using junit-dep as dependency
+- added optional one-time requestFactory overwrite for all put, get, delete, post
 
 Version 0.5: 2012-07-20
 ----------------------
