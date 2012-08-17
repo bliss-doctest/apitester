@@ -3,11 +3,14 @@ CHANGES
 
 develop
 -------
+
+Version 0.6.2: 2012-08-17
+-------------------------
 - using junit-dep as dependency
 - added optional one-time requestFactory overwrite for all put, get, delete, post
 
 Version 0.5: 2012-07-20
-----------------------
+-----------------------
 - added support to access and manipulate cookies
 - added optional injected setter for the factories in the Apitest class to be able to inject the ApiTest class easily.
 
