@@ -6,17 +6,12 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,39 +20,10 @@ import org.mockito.MockitoAnnotations;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
-import de.devbliss.apitester.factory.HttpDeleteWithBody;
 import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 
 public class ApiTestUnitTest {
-
-    class MyGetFactory implements GetFactory {
-        public HttpGet createGetRequest(URI uri) throws IOException {
-            return null;
-        }
-    }
-
-    class MyDeleteFactory implements DeleteFactory {
-        public HttpDeleteWithBody createDeleteRequest(URI uri, Object payload) throws IOException {
-            return null;
-        }
-
-        public HttpDelete createDeleteRequest(URI uri) throws IOException {
-            return null;
-        }
-    }
-
-    class MyPostFactory implements PostFactory {
-        public HttpPost createPostRequest(URI uri, Object payload) throws IOException {
-            return null;
-        }
-    }
-
-    class MyPutFactory implements PutFactory {
-        public HttpPut createPutRequest(URI uri, Object payload) throws IOException {
-            return null;
-        }
-    }
 
     private static final String URI_STRING = "http://www.example.com";
 
@@ -83,13 +49,13 @@ public class ApiTestUnitTest {
     private StatusLine statusLine;
 
     @Mock
-    private MyGetFactory myGetFactory;
+    private GetFactory myGetFactory;
     @Mock
-    private MyPostFactory myPostFactory;
+    private PostFactory myPostFactory;
     @Mock
-    private MyPutFactory myPutFactory;
+    private PutFactory myPutFactory;
     @Mock
-    private MyDeleteFactory myDeleteFactory;
+    private DeleteFactory myDeleteFactory;
 
     @Before
     public void setUp() throws Exception {
