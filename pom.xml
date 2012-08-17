@@ -187,23 +187,6 @@
         <url>https://github.com/devbliss/apitester/issues/</url>
     </issueManagement>
     
-    <distributionManagement>
-		<repository>
-			<id>vz.releases</id>
-			<name>VZ/IDPOOL Release Repository</name>
-			<url>http://nexus.vz.net/content/repositories/releases/</url>
-			<layout>default</layout>
-			<uniqueVersion>false</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>vz.snapshots</id>
-			<name>VZ/IDPOOL Snapshot Repository</name>
-			<url>http://nexus.vz.net/content/repositories/snapshots/</url>
-			<layout>default</layout>
-			<uniqueVersion>true</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
-
     <reporting>
         <plugins>
             <plugin>
