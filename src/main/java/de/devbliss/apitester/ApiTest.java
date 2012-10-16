@@ -138,10 +138,10 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse post(URI uri, Object payload) throws IOException {
+    public RequestResponseWrapper post(URI uri, Object payload) throws IOException {
         return post(uri, payload, getDefaultPostFactory());
     }
-    
+
     /**
      * Performs a post request using the given {@link PostFactory} and the {@link TestState} of
      * this instance. The {@link PostFactory} will be used for this call only. If you want to
@@ -153,7 +153,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse post(URI uri, Object payload, PostFactory postFactory) throws IOException {
+    public RequestResponseWrapper post(URI uri, Object payload, PostFactory postFactory) throws IOException {
         return Poster.post(uri, payload, getTestState(), postFactory);
     }
 

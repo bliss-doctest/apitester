@@ -157,7 +157,7 @@ public class ApiTestUnitTest {
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
-        ApiResponse response = apiTest.post(uri, payload);
+        ApiResponse response = apiTest.post(uri, payload).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }
