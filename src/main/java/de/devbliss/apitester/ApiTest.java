@@ -138,7 +138,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public RequestResponseWrapper post(URI uri, Object payload) throws IOException {
+    public Context post(URI uri, Object payload) throws IOException {
         return post(uri, payload, getDefaultPostFactory());
     }
 
@@ -153,7 +153,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public RequestResponseWrapper post(URI uri, Object payload, PostFactory postFactory) throws IOException {
+    public Context post(URI uri, Object payload, PostFactory postFactory) throws IOException {
         return Poster.post(uri, payload, getTestState(), postFactory);
     }
 

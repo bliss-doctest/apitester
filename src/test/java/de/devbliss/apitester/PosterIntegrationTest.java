@@ -47,7 +47,7 @@ public class PosterIntegrationTest {
     @Test
     public void testPostOk() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        RequestResponseWrapper wrapper = Poster.post(uri);
+        Context wrapper = Poster.post(uri);
         HttpRequest request = wrapper.httpRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
@@ -58,7 +58,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithPayload() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        RequestResponseWrapper wrapper = Poster.post(uri, payload);
+        Context wrapper = Poster.post(uri, payload);
         HttpRequest request = wrapper.httpRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
@@ -70,7 +70,7 @@ public class PosterIntegrationTest {
     @Test
     public void testPostOkWithOwnPostFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        RequestResponseWrapper wrapper = Poster.post(uri, new DefaultPostFactory());
+        Context wrapper = Poster.post(uri, new DefaultPostFactory());
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);
@@ -81,7 +81,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithOwnTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        RequestResponseWrapper wrapper = Poster.post(uri, testState);
+        Context wrapper = Poster.post(uri, testState);
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);
@@ -92,7 +92,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithOwnPostFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        RequestResponseWrapper wrapper = Poster.post(uri, new DefaultPostFactory(), testState);
+        Context wrapper = Poster.post(uri, new DefaultPostFactory(), testState);
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);
@@ -103,7 +103,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithPayloadAndOwnPostFactory() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        RequestResponseWrapper wrapper = Poster.post(uri, payload, new DefaultPostFactory());
+        Context wrapper = Poster.post(uri, payload, new DefaultPostFactory());
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);
@@ -117,7 +117,7 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        RequestResponseWrapper wrapper = Poster.post(uri, payload, testState);
+        Context wrapper = Poster.post(uri, payload, testState);
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);
@@ -131,7 +131,7 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        RequestResponseWrapper wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory());
+        Context wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory());
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);
@@ -145,7 +145,7 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        RequestResponseWrapper wrapper = Poster.post(uri, payload, testState, getPostFactoryWithHeaders());
+        Context wrapper = Poster.post(uri, payload, testState, getPostFactoryWithHeaders());
         ApiResponse response = wrapper.apiResponse;
         HttpRequest request = wrapper.httpRequest;
         ApiTestUtil.assertOk(response);

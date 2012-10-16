@@ -18,31 +18,31 @@ import de.devbliss.apitester.factory.PostFactory;
  */
 public class Poster {
 
-    public static RequestResponseWrapper post(URI uri) throws IOException {
+    public static Context post(URI uri) throws IOException {
         return post(uri, null, null, null);
     }
 
-    public static RequestResponseWrapper post(URI uri, PostFactory postFactory) throws IOException {
+    public static Context post(URI uri, PostFactory postFactory) throws IOException {
         return post(uri, null, null, postFactory);
     }
 
-    public static RequestResponseWrapper post(URI uri, TestState testState) throws IOException {
+    public static Context post(URI uri, TestState testState) throws IOException {
         return post(uri, null, testState, null);
     }
 
-    public static RequestResponseWrapper post(URI uri, Object payload) throws IOException {
+    public static Context post(URI uri, Object payload) throws IOException {
         return post(uri, payload, null, null);
     }
 
-    public static RequestResponseWrapper post(URI uri, Object payload, PostFactory postFactory) throws IOException {
+    public static Context post(URI uri, Object payload, PostFactory postFactory) throws IOException {
         return post(uri, payload, null, postFactory);
     }
 
-    public static RequestResponseWrapper post(URI uri, Object payload, TestState testState) throws IOException {
+    public static Context post(URI uri, Object payload, TestState testState) throws IOException {
         return post(uri, payload, testState, null);
     }
 
-    public static RequestResponseWrapper post(URI uri, Object payload, TestState testState, PostFactory postFactory)
+    public static Context post(URI uri, Object payload, TestState testState, PostFactory postFactory)
             throws IOException {
 
         if (postFactory == null) {
@@ -56,6 +56,6 @@ public class Poster {
         HttpPost request = postFactory.createPostRequest(uri, payload);
         HttpResponse response = testState.client.execute(request);
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
-        return new RequestResponseWrapper(apiResponse, request);
+        return new Context(apiResponse, request);
     }
 }

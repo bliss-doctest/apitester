@@ -9,12 +9,12 @@ import org.apache.http.HttpRequest;
  * @author bmary
  * 
  */
-public class RequestResponseWrapper {
+public class Context {
 
     public final ApiResponse apiResponse;
     public final HttpRequest httpRequest;
 
-    public RequestResponseWrapper(ApiResponse apiResponse, HttpRequest httpRequest) {
+    public Context(ApiResponse apiResponse, HttpRequest httpRequest) {
         this.apiResponse = apiResponse;
         this.httpRequest = httpRequest;
     }
