@@ -147,7 +147,7 @@ public class ApiTestUnitTest {
     public void testGetStatusCode() throws Exception {
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
         ApiTest apiTest = createApiTest();
-        ApiResponse response = apiTest.get(uri);
+        ApiResponse response = apiTest.get(uri).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }
@@ -166,7 +166,7 @@ public class ApiTestUnitTest {
     public void testPutStatusCode() throws Exception {
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
         ApiTest apiTest = createApiTest();
-        ApiResponse response = apiTest.put(uri);
+        ApiResponse response = apiTest.put(uri).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }
@@ -176,7 +176,7 @@ public class ApiTestUnitTest {
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
-        ApiResponse response = apiTest.put(uri, payload);
+        ApiResponse response = apiTest.put(uri, payload).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }
@@ -185,7 +185,7 @@ public class ApiTestUnitTest {
     public void testDeleteStatusCode() throws Exception {
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
         ApiTest apiTest = createApiTest();
-        ApiResponse response = apiTest.delete(uri);
+        ApiResponse response = apiTest.delete(uri).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }
@@ -195,7 +195,7 @@ public class ApiTestUnitTest {
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
-        ApiResponse response = apiTest.delete(uri, payload);
+        ApiResponse response = apiTest.delete(uri, payload).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }

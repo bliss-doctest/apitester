@@ -165,7 +165,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse get(URI uri) throws IOException {
+    public Context get(URI uri) throws IOException {
         return get(uri, getDefaultGetFactory());
     }
 
@@ -178,7 +178,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse get(URI uri, GetFactory getFactory) throws IOException {
+    public Context get(URI uri, GetFactory getFactory) throws IOException {
         return Getter.get(uri, getTestState(), getFactory);
     }
 
@@ -190,7 +190,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse delete(URI uri) throws IOException {
+    public Context delete(URI uri) throws IOException {
         return delete(uri, null, getDefaultDeleteFactory());
     }
 
@@ -204,7 +204,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse delete(URI uri, Object payload) throws IOException {
+    public Context delete(URI uri, Object payload) throws IOException {
         return delete(uri, payload, getDefaultDeleteFactory());
     }
 
@@ -220,8 +220,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse delete(URI uri, Object payload, DeleteFactory deleteFactory)
-            throws IOException {
+    public Context delete(URI uri, Object payload, DeleteFactory deleteFactory) throws IOException {
         return Deleter.delete(uri, getTestState(), deleteFactory, payload);
     }
 
@@ -233,7 +232,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse put(URI uri) throws IOException {
+    public Context put(URI uri) throws IOException {
         return put(uri, null, getDefaultPutFactory());
     }
 
@@ -246,7 +245,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse put(URI uri, Object payload) throws IOException {
+    public Context put(URI uri, Object payload) throws IOException {
         return put(uri, payload, getDefaultPutFactory());
     }
 
@@ -261,7 +260,7 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public ApiResponse put(URI uri, Object payload, PutFactory putFactory) throws IOException {
+    public Context put(URI uri, Object payload, PutFactory putFactory) throws IOException {
         return Putter.put(uri, getTestState(), putFactory, payload);
     }
 

@@ -5,11 +5,8 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import de.devbliss.apitester.ApiResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.jetty.server.Server;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Simple HTTP server using Jetty. Tries to find a free port on instanciation and is ready for
@@ -31,7 +28,7 @@ public class DummyApiServer {
     private static final int MAX_PORT = 10000;
     private final int port;
     private Server server;
-    private DelegateHandler delegateHandler = new DelegateHandler();
+    private final DelegateHandler delegateHandler = new DelegateHandler();
 
     public DummyApiServer() {
         port = findFreePort();

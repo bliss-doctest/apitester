@@ -1,13 +1,13 @@
 package de.devbliss.apitester.dummyserver;
 
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URLEncoder;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 /**
  * Request handler that delegates to a mock handler
@@ -19,8 +19,8 @@ public class DelegateHandler extends AbstractHandler {
         this.handler = handler;
     }
 
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void handle(String target, Request baseRequest, HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
         if (handler != null) {
             try {
                 handler.handle(request, response);

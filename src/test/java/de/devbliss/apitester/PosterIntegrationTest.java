@@ -27,10 +27,10 @@ import de.devbliss.apitester.factory.impl.DefaultPostFactory;
  */
 public class PosterIntegrationTest {
 
-    protected static final String HEADER_VALUE1 = "header_value1";
-    protected static final String HEADER_NAME1 = "header_name1";
-    protected static final String HEADER_VALUE2 = "header_value2";
-    protected static final String HEADER_NAME2 = "header_name2";
+    private static final String HEADER_VALUE1 = "header_value1";
+    private static final String HEADER_NAME1 = "header_name1";
+    private static final String HEADER_VALUE2 = "header_value2";
+    private static final String HEADER_NAME2 = "header_name2";
     private DummyApiServer server;
 
     @Before

@@ -18,41 +18,38 @@ import de.devbliss.apitester.factory.DeleteFactory;
  */
 public class Deleter {
 
-    public static ApiResponse delete(URI uri) throws IOException {
+    public static Context delete(URI uri) throws IOException {
         return delete(uri, null, null, null);
     }
 
-    public static ApiResponse delete(URI uri, DeleteFactory deleteFactory) throws IOException {
+    public static Context delete(URI uri, DeleteFactory deleteFactory) throws IOException {
         return delete(uri, null, deleteFactory, null);
     }
 
-    public static ApiResponse delete(URI uri, TestState testState) throws IOException {
+    public static Context delete(URI uri, TestState testState) throws IOException {
         return delete(uri, testState, null, null);
     }
 
-    public static ApiResponse delete(URI uri, TestState testState, DeleteFactory deleteFactory)
+    public static Context delete(URI uri, TestState testState, DeleteFactory deleteFactory)
             throws IOException {
         return delete(uri, testState, deleteFactory, null);
     }
 
-    public static ApiResponse delete(URI uri, Object payload) throws IOException {
+    public static Context delete(URI uri, Object payload) throws IOException {
         return delete(uri, null, null, payload);
     }
 
-    public static ApiResponse delete(URI uri, Object payload, DeleteFactory deleteFactory)
+    public static Context delete(URI uri, Object payload, DeleteFactory deleteFactory)
             throws IOException {
         return delete(uri, null, deleteFactory, payload);
     }
 
-    public static ApiResponse delete(URI uri, Object payload, TestState testState)
-            throws IOException {
+    public static Context delete(URI uri, Object payload, TestState testState) throws IOException {
         return delete(uri, testState, null, payload);
     }
 
-    public static ApiResponse delete(URI uri, TestState testState,
-            DeleteFactory deleteFactory,
-            Object payload)
-            throws IOException {
+    public static Context delete(URI uri, TestState testState, DeleteFactory deleteFactory,
+            Object payload) throws IOException {
 
         if (deleteFactory == null) {
             deleteFactory = ApiTesterModule.createDeleteFactory();
@@ -71,6 +68,7 @@ public class Deleter {
         }
 
         HttpResponse response = testState.client.execute(request);
-        return ApiTestUtil.convertToApiResponse(response);
+        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
+        return new Context(apiResponse, request);
     }
 }
