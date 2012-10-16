@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URI;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.junit.After;
@@ -48,10 +47,10 @@ public class PosterIntegrationTest {
     public void testPostOk() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         Context wrapper = Poster.post(uri);
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -59,12 +58,12 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         Context wrapper = Poster.post(uri, payload);
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -72,9 +71,9 @@ public class PosterIntegrationTest {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         Context wrapper = Poster.post(uri, new DefaultPostFactory());
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -83,9 +82,9 @@ public class PosterIntegrationTest {
         TestState testState = ApiTesterModule.createTestState();
         Context wrapper = Poster.post(uri, testState);
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -94,9 +93,9 @@ public class PosterIntegrationTest {
         TestState testState = ApiTesterModule.createTestState();
         Context wrapper = Poster.post(uri, new DefaultPostFactory(), testState);
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -105,11 +104,11 @@ public class PosterIntegrationTest {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         Context wrapper = Poster.post(uri, payload, new DefaultPostFactory());
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -119,11 +118,11 @@ public class PosterIntegrationTest {
         TestState testState = ApiTesterModule.createTestState();
         Context wrapper = Poster.post(uri, payload, testState);
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -133,11 +132,11 @@ public class PosterIntegrationTest {
         TestState testState = ApiTesterModule.createTestState();
         Context wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory());
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getAllHeaders());
+        assertNotNull(request.getHeaders());
     }
 
     @Test
@@ -147,11 +146,11 @@ public class PosterIntegrationTest {
         TestState testState = ApiTesterModule.createTestState();
         Context wrapper = Poster.post(uri, payload, testState, getPostFactoryWithHeaders());
         ApiResponse response = wrapper.apiResponse;
-        HttpRequest request = wrapper.httpRequest;
+        ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertEquals(2, request.getAllHeaders().length);
-        assertEquals(HEADER_VALUE1, request.getHeaders(HEADER_NAME1)[0].getValue());
-        assertEquals(HEADER_VALUE2, request.getHeaders(HEADER_NAME2)[0].getValue());
+        assertEquals(2, request.getHeaders().keySet().size());
+        assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
+        assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
     }
 
     private PostFactory getPostFactoryWithHeaders() {

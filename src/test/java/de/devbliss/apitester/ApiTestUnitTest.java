@@ -9,10 +9,17 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 
 import org.apache.http.Header;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.RequestLine;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,6 +27,7 @@ import org.mockito.MockitoAnnotations;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
+import de.devbliss.apitester.factory.HttpDeleteWithBody;
 import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 
@@ -28,10 +36,6 @@ public class ApiTestUnitTest {
     private static final String URI_STRING = "http://www.example.com";
 
     private static final int STATUS_CODE_TEAPOT = 418;
-
-    private URI uri;
-
-    private TestState testState;
 
     @Mock
     private GetFactory getFactory;
@@ -46,8 +50,11 @@ public class ApiTestUnitTest {
     @Mock
     private HttpResponse response;
     @Mock
+    private HttpRequest request;
+    @Mock
     private StatusLine statusLine;
-
+    @Mock
+    private RequestLine requestLine;
     @Mock
     private GetFactory myGetFactory;
     @Mock
@@ -56,15 +63,60 @@ public class ApiTestUnitTest {
     private PutFactory myPutFactory;
     @Mock
     private DeleteFactory myDeleteFactory;
+    @Mock
+    private HttpGet httpGet;
+    @Mock
+    private HttpPost httpPost;
+    @Mock
+    private HttpPut httpPut;
+    @Mock
+    private HttpDelete httpDelete;
+    @Mock
+    private HttpDeleteWithBody httpDeleteWithBody;
+
+    private URI uri;
+    private TestState testState;
+    private Header[] headers;
 
     @Before
     public void setUp() throws Exception {
         uri = new URI(URI_STRING);
+        headers = new Header[1];
+        headers[0] = new BasicHeader("name", "value");
         MockitoAnnotations.initMocks(this);
         when(response.getStatusLine()).thenReturn(statusLine);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
         testState = new TestState(httpClient, null);
-        when(response.getAllHeaders()).thenReturn(new Header[] {});
+
+        when(getFactory.createGetRequest(uri)).thenReturn(httpGet);
+        when(postFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
+        when(putFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
+        when(deleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
+        when(deleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
+                httpDeleteWithBody);
+
+        when(myGetFactory.createGetRequest(uri)).thenReturn(httpGet);
+        when(myPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
+        when(myPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
+        when(myDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
+        when(myDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
+                httpDeleteWithBody);
+
+        when(httpGet.getRequestLine()).thenReturn(requestLine);
+        when(httpGet.getAllHeaders()).thenReturn(headers);
+
+        when(httpPost.getRequestLine()).thenReturn(requestLine);
+        when(httpPost.getAllHeaders()).thenReturn(headers);
+
+        when(httpPut.getRequestLine()).thenReturn(requestLine);
+        when(httpPut.getAllHeaders()).thenReturn(headers);
+
+        when(httpDelete.getRequestLine()).thenReturn(requestLine);
+        when(httpDelete.getAllHeaders()).thenReturn(headers);
+        when(httpDeleteWithBody.getRequestLine()).thenReturn(requestLine);
+        when(httpDeleteWithBody.getAllHeaders()).thenReturn(headers);
+
+        when(response.getAllHeaders()).thenReturn(headers);
     }
 
     @Test

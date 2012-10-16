@@ -5,11 +5,13 @@ import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
 /**
@@ -93,17 +95,33 @@ public class ApiTestUtil {
         assertTrue(response.isStatusNotFound());
     }
 
-
     public static ApiResponse convertToApiResponse(HttpResponse httpResponse) throws IOException {
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         HttpEntity entity = httpResponse.getEntity();
         String rawResponse = entity != null ? IOUtils.toString(entity.getContent()) : "";
 
-        Map<String, String> headers = new HashMap<String, String>();
-        for (Header header : httpResponse.getAllHeaders()) {
-            headers.put(header.getName(), header.getValue());
-        }
+        Map<String, String> headers = transformHeaders(httpResponse.getAllHeaders());
 
-        return new ApiResponse(httpStatus, httpResponse.getStatusLine().getReasonPhrase(), rawResponse, headers);
+        return new ApiResponse(httpStatus, httpResponse.getStatusLine().getReasonPhrase(),
+                rawResponse, headers);
+    }
+
+    private static Map<String, String> transformHeaders(Header[] headers) {
+        Map<String, String> transformedHeaders = new HashMap<String, String>();
+        for (Header header : headers) {
+            transformedHeaders.put(header.getName().toLowerCase(Locale.ENGLISH), header.getValue());
+        }
+        return transformedHeaders;
+    }
+
+    /**
+     * Transforms an {@link HttpRequest} object to an {@link ApiRequest}
+     * 
+     * @param httpRequest
+     * @return
+     */
+    public static ApiRequest convertToApiRequest(HttpRequest httpRequest) {
+        return new ApiRequest(httpRequest.getRequestLine().getUri(), transformHeaders(httpRequest
+                .getAllHeaders()));
     }
 }

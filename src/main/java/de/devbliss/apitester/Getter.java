@@ -44,6 +44,7 @@ public class Getter {
         HttpGet request = getFactory.createGetRequest(uri);
         HttpResponse response = testState.client.execute(request);
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
-        return new Context(apiResponse, request);
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(request);
+        return new Context(apiResponse, apiRequest);
     }
 }

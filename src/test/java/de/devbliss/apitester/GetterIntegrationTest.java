@@ -6,7 +6,6 @@ import static junit.framework.Assert.assertFalse;
 import java.io.IOException;
 import java.net.URI;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.After;
@@ -101,12 +100,12 @@ public class GetterIntegrationTest {
         TestState testState = ApiTesterModule.createTestState();
         Context context = Getter.get(uri, testState, getGetFactoryWithHeaders());
         ApiResponse response = context.apiResponse;
-        HttpRequest request = context.httpRequest;
+        ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(DummyDto.createSampleInstance(), result);
-        assertEquals(HEADER_VALUE1, request.getHeaders(HEADER_NAME1)[0].getValue());
-        assertEquals(HEADER_VALUE2, request.getHeaders(HEADER_NAME2)[0].getValue());
+        assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
+        assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
     }
 
     private GetFactory getGetFactoryWithHeaders() {

@@ -12,10 +12,10 @@ import org.apache.http.HttpRequest;
 public class Context {
 
     public final ApiResponse apiResponse;
-    public final HttpRequest httpRequest;
+    public final ApiRequest apiRequest;
 
-    public Context(ApiResponse apiResponse, HttpRequest httpRequest) {
+    public Context(ApiResponse apiResponse, ApiRequest apiRequest) {
         this.apiResponse = apiResponse;
-        this.httpRequest = httpRequest;
+        this.apiRequest = apiRequest;
     }
 }
