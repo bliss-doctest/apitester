@@ -50,7 +50,7 @@ public class PosterIntegrationTest {
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class PosterIntegrationTest {
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class PosterIntegrationTest {
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class PosterIntegrationTest {
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class PosterIntegrationTest {
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class PosterIntegrationTest {
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class PosterIntegrationTest {
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PosterIntegrationTest {
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
-        assertNotNull(request.getHeaders());
+        assertNotNull(request.headers);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class PosterIntegrationTest {
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertEquals(2, request.getHeaders().keySet().size());
+        assertEquals(2, request.headers.keySet().size());
         assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
         assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
     }

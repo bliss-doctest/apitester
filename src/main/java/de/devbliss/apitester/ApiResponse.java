@@ -127,14 +127,4 @@ public class ApiResponse {
     public String getHeader(String name) {
         return headers.get(name.toLowerCase());
     }
-
-    /**
-     * Get all the headers as a map
-     * 
-     * @return The headers
-     */
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
 }
