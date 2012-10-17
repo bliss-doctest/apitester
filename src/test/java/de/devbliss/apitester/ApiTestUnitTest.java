@@ -22,8 +22,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
@@ -31,6 +32,7 @@ import de.devbliss.apitester.factory.HttpDeleteWithBody;
 import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ApiTestUnitTest {
 
     private static final String URI_STRING = "http://www.example.com";
@@ -38,13 +40,13 @@ public class ApiTestUnitTest {
     private static final int STATUS_CODE_TEAPOT = 418;
 
     @Mock
-    private GetFactory getFactory;
+    private GetFactory defaultGetFactory;
     @Mock
-    private PostFactory postFactory;
+    private PostFactory defaultPostFactory;
     @Mock
-    private DeleteFactory deleteFactory;
+    private DeleteFactory defaultDeleteFactory;
     @Mock
-    private PutFactory putFactory;
+    private PutFactory defaultPutFactory;
     @Mock
     private HttpClient httpClient;
     @Mock
@@ -83,24 +85,9 @@ public class ApiTestUnitTest {
         uri = new URI(URI_STRING);
         headers = new Header[1];
         headers[0] = new BasicHeader("name", "value");
-        MockitoAnnotations.initMocks(this);
         when(response.getStatusLine()).thenReturn(statusLine);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
         testState = new TestState(httpClient, null);
-
-        when(getFactory.createGetRequest(uri)).thenReturn(httpGet);
-        when(postFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
-        when(putFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
-        when(deleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
-        when(deleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
-                httpDeleteWithBody);
-
-        when(myGetFactory.createGetRequest(uri)).thenReturn(httpGet);
-        when(myPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
-        when(myPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
-        when(myDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
-        when(myDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
-                httpDeleteWithBody);
 
         when(httpGet.getRequestLine()).thenReturn(requestLine);
         when(httpGet.getAllHeaders()).thenReturn(headers);
@@ -120,29 +107,37 @@ public class ApiTestUnitTest {
     }
 
     @Test
-    public void testGetUsesGivenGetFactory() throws Exception {
+    public void testGetUsesDefaultGetFactory() throws Exception {
+        when(defaultGetFactory.createGetRequest(uri)).thenReturn(httpGet);
+
         ApiTest apiTest = createApiTest();
         apiTest.get(uri);
-        verify(getFactory).createGetRequest(eq(uri));
+        verify(defaultGetFactory).createGetRequest(eq(uri));
     }
 
     @Test
     public void testGetUsesSpecifiedGetFactory() throws Exception {
+        when(myGetFactory.createGetRequest(uri)).thenReturn(httpGet);
+
         ApiTest apiTest = createApiTest();
         apiTest.get(uri, myGetFactory);
         verify(myGetFactory).createGetRequest(eq(uri));
     }
 
     @Test
-    public void testPostUsesGivenPostFactory() throws Exception {
+    public void testPostUsesDefaultPostFactory() throws Exception {
+        when(defaultPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         apiTest.post(uri, payload);
-        verify(postFactory).createPostRequest(eq(uri), eq(payload));
+        verify(defaultPostFactory).createPostRequest(eq(uri), eq(payload));
     }
 
     @Test
     public void testPostUsesSpecifiedPostFactory() throws Exception {
+        when(myPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         apiTest.post(uri, payload, myPostFactory);
@@ -150,15 +145,19 @@ public class ApiTestUnitTest {
     }
 
     @Test
-    public void testPutUsesGivenPutFactory() throws Exception {
+    public void testPutUsesDefaultPutFactory() throws Exception {
+        when(defaultPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         apiTest.put(uri, payload);
-        verify(putFactory).createPutRequest(eq(uri), eq(payload));
+        verify(defaultPutFactory).createPutRequest(eq(uri), eq(payload));
     }
 
     @Test
     public void testPutUsesSpecifiedPutFactory() throws Exception {
+        when(myPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         apiTest.put(uri, payload, myPutFactory);
@@ -166,14 +165,18 @@ public class ApiTestUnitTest {
     }
 
     @Test
-    public void testDeleteUsesGivenDeleteFactory() throws Exception {
+    public void testDeleteUsesDefaultDeleteFactory() throws Exception {
+        when(defaultDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
+
         ApiTest apiTest = createApiTest();
         apiTest.delete(uri);
-        verify(deleteFactory).createDeleteRequest(eq(uri));
+        verify(defaultDeleteFactory).createDeleteRequest(eq(uri));
     }
 
     @Test
     public void testDeleteUsesSpecifiedDeleteFactory() throws Exception {
+        when(myDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
+
         ApiTest apiTest = createApiTest();
         apiTest.delete(uri, null, myDeleteFactory);
         verify(myDeleteFactory).createDeleteRequest(eq(uri));
@@ -181,14 +184,20 @@ public class ApiTestUnitTest {
 
     @Test
     public void testDeleteWithPayloadUsesGivenDeleteFactory() throws Exception {
+        when(defaultDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
+                httpDeleteWithBody);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         apiTest.delete(uri, payload);
-        verify(deleteFactory).createDeleteRequest(eq(uri), eq(payload));
+        verify(defaultDeleteFactory).createDeleteRequest(eq(uri), eq(payload));
     }
 
     @Test
     public void testDeleteWithPayloadUsesSpecifiedDeleteFactory() throws Exception {
+        when(myDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
+                httpDeleteWithBody);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         apiTest.delete(uri, payload, myDeleteFactory);
@@ -197,7 +206,9 @@ public class ApiTestUnitTest {
 
     @Test
     public void testGetStatusCode() throws Exception {
+        when(defaultGetFactory.createGetRequest(uri)).thenReturn(httpGet);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
+
         ApiTest apiTest = createApiTest();
         ApiResponse response = apiTest.get(uri).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
@@ -206,7 +217,9 @@ public class ApiTestUnitTest {
 
     @Test
     public void testPostStatusCode() throws Exception {
+        when(defaultPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         ApiResponse response = apiTest.post(uri, payload).apiResponse;
@@ -216,7 +229,9 @@ public class ApiTestUnitTest {
 
     @Test
     public void testPutStatusCode() throws Exception {
+        when(defaultPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
+
         ApiTest apiTest = createApiTest();
         ApiResponse response = apiTest.put(uri).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
@@ -225,7 +240,9 @@ public class ApiTestUnitTest {
 
     @Test
     public void testPutWithPayloadStatusCode() throws Exception {
+        when(defaultPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         ApiResponse response = apiTest.put(uri, payload).apiResponse;
@@ -235,7 +252,9 @@ public class ApiTestUnitTest {
 
     @Test
     public void testDeleteStatusCode() throws Exception {
+        when(defaultDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
+
         ApiTest apiTest = createApiTest();
         ApiResponse response = apiTest.delete(uri).apiResponse;
         assertEquals(STATUS_CODE_TEAPOT, response.httpStatus);
@@ -244,7 +263,10 @@ public class ApiTestUnitTest {
 
     @Test
     public void testDeleteWithPayloadStatusCode() throws Exception {
+        when(defaultDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
+                httpDeleteWithBody);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
+
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
         ApiResponse response = apiTest.delete(uri, payload).apiResponse;
@@ -254,10 +276,10 @@ public class ApiTestUnitTest {
 
     private ApiTest createApiTest() {
         ApiTest apiTest = new ApiTest();
-        apiTest.setDefaultDeleteFactory(deleteFactory);
-        apiTest.setDefaultGetFactory(getFactory);
-        apiTest.setDefaultPutFactory(putFactory);
-        apiTest.setDefaultPostFactory(postFactory);
+        apiTest.setDefaultDeleteFactory(defaultDeleteFactory);
+        apiTest.setDefaultGetFactory(defaultGetFactory);
+        apiTest.setDefaultPutFactory(defaultPutFactory);
+        apiTest.setDefaultPostFactory(defaultPostFactory);
         apiTest.setTestState(testState);
         return apiTest;
     }
