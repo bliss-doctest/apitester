@@ -95,6 +95,13 @@ public class ApiTestUtil {
         assertTrue(response.isStatusNotFound());
     }
 
+    /**
+     * Transforms an {@link HttpResponse} object to an {@link ApiResponse}
+     * 
+     * @param httpResponse
+     * @return
+     * @throws IOException
+     */
     public static ApiResponse convertToApiResponse(HttpResponse httpResponse) throws IOException {
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         HttpEntity entity = httpResponse.getEntity();
@@ -106,6 +113,13 @@ public class ApiTestUtil {
                 rawResponse, headers);
     }
 
+    /**
+     * transform the original headers from the request or response to a map
+     * and set the name of the headers to lower case
+     * 
+     * @param headers
+     * @return transformedHeaders
+     */
     private static Map<String, String> transformHeaders(Header[] headers) {
         Map<String, String> transformedHeaders = new HashMap<String, String>();
         for (Header header : headers) {
@@ -124,5 +138,4 @@ public class ApiTestUtil {
         return new ApiRequest(httpRequest.getRequestLine().getUri(), transformHeaders(httpRequest
                 .getAllHeaders()));
     }
-
 }

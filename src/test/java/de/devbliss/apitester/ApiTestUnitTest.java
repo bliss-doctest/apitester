@@ -274,6 +274,7 @@ public class ApiTestUnitTest {
         ApiTestUtil.assertStatus(response, STATUS_CODE_TEAPOT);
     }
 
+    // TODO: to setUp()
     private ApiTest createApiTest() {
         ApiTest apiTest = new ApiTest();
         apiTest.setDefaultDeleteFactory(defaultDeleteFactory);
@@ -283,5 +284,4 @@ public class ApiTestUnitTest {
         apiTest.setTestState(testState);
         return apiTest;
     }
-
 }
