@@ -1,10 +1,9 @@
 package de.devbliss.apitester;
 
-import org.apache.http.HttpRequest;
 
 /**
- * Wrapper object containing the {@link HttpRequest} object and the corresponding
- * {@link ApiResponse}.
+ * Wrapper object containing the {@link ApiRequest} object and the corresponding {@link ApiResponse}
+ * .
  * 
  * @author bmary
  * 
