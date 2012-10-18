@@ -19,39 +19,36 @@ import de.devbliss.apitester.factory.PutFactory;
  */
 public class Putter {
 
-    public static ApiResponse put(URI uri) throws IOException {
+    public static Context put(URI uri) throws IOException {
         return put(uri, null, null, null);
     }
 
-    public static ApiResponse put(URI uri, PutFactory putFactory) throws IOException {
+    public static Context put(URI uri, PutFactory putFactory) throws IOException {
         return put(uri, null, putFactory, null);
     }
 
-    public static ApiResponse put(URI uri, TestState testState) throws IOException {
+    public static Context put(URI uri, TestState testState) throws IOException {
         return put(uri, testState, null, null);
     }
 
-    public static ApiResponse put(URI uri, TestState testState, PutFactory putFactory)
+    public static Context put(URI uri, TestState testState, PutFactory putFactory)
             throws IOException {
         return put(uri, testState, putFactory, null);
     }
 
-    public static ApiResponse put(URI uri, Object payload) throws IOException {
+    public static Context put(URI uri, Object payload) throws IOException {
         return put(uri, null, null, payload);
     }
 
-    public static ApiResponse put(URI uri, Object payload, PutFactory putFactory)
-            throws IOException {
+    public static Context put(URI uri, Object payload, PutFactory putFactory) throws IOException {
         return put(uri, null, putFactory, payload);
     }
 
-    public static ApiResponse put(URI uri, Object payload, TestState testState)
-            throws IOException {
+    public static Context put(URI uri, Object payload, TestState testState) throws IOException {
         return put(uri, testState, null, payload);
     }
 
-    public static ApiResponse put(URI uri, TestState testState, PutFactory putFactory,
-            Object payload)
+    public static Context put(URI uri, TestState testState, PutFactory putFactory, Object payload)
             throws IOException {
 
         if (putFactory == null) {
@@ -64,6 +61,8 @@ public class Putter {
 
         HttpPut request = putFactory.createPutRequest(uri, payload);
         HttpResponse response = testState.client.execute(request);
-        return ApiTestUtil.convertToApiResponse(response);
+        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, request);
+        return new Context(apiResponse, apiRequest);
     }
 }

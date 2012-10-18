@@ -18,34 +18,32 @@ import de.devbliss.apitester.factory.PostFactory;
  */
 public class Poster {
 
-    public static ApiResponse post(URI uri) throws IOException {
+    public static Context post(URI uri) throws IOException {
         return post(uri, null, null, null);
     }
 
-    public static ApiResponse post(URI uri, PostFactory postFactory) throws IOException {
+    public static Context post(URI uri, PostFactory postFactory) throws IOException {
         return post(uri, null, null, postFactory);
     }
 
-    public static ApiResponse post(URI uri, TestState testState) throws IOException {
+    public static Context post(URI uri, TestState testState) throws IOException {
         return post(uri, null, testState, null);
     }
 
-    public static ApiResponse post(URI uri, Object payload) throws IOException {
+    public static Context post(URI uri, Object payload) throws IOException {
         return post(uri, payload, null, null);
     }
 
-    public static ApiResponse post(URI uri, Object payload, PostFactory postFactory)
-            throws IOException {
+    public static Context post(URI uri, Object payload, PostFactory postFactory) throws IOException {
         return post(uri, payload, null, postFactory);
     }
 
-    public static ApiResponse post(URI uri, Object payload, TestState testState)
-            throws IOException {
+    public static Context post(URI uri, Object payload, TestState testState) throws IOException {
         return post(uri, payload, testState, null);
     }
 
-    public static ApiResponse post(URI uri, Object payload, TestState testState,
-            PostFactory postFactory) throws IOException {
+    public static Context post(URI uri, Object payload, TestState testState, PostFactory postFactory)
+            throws IOException {
 
         if (postFactory == null) {
             postFactory = ApiTesterModule.createPostFactory();
@@ -57,6 +55,8 @@ public class Poster {
 
         HttpPost request = postFactory.createPostRequest(uri, payload);
         HttpResponse response = testState.client.execute(request);
-        return ApiTestUtil.convertToApiResponse(response);
+        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, request);
+        return new Context(apiResponse, apiRequest);
     }
 }

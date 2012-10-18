@@ -3,6 +3,7 @@ CHANGES
 
 develop
 -------
+- create the context object which contains the response and the request and is returned by the requests
 
 Version 0.6.2: 2012-08-17
 -------------------------

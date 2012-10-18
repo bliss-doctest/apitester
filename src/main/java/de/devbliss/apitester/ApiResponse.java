@@ -1,15 +1,13 @@
 package de.devbliss.apitester;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.codehaus.jackson.type.TypeReference;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Data container for the most important parts of a HTTP response. Easier to use than
@@ -29,19 +27,16 @@ public class ApiResponse {
     public final String reasonPhrase;
     public final String payload;
     public final Map<String, String> headers;
-    private final Map<String, String> caseInsensitiveHeaders;
 
-    public ApiResponse(int httpStatus, String reasonPhrase, String payload, Map<String, String> headers) {
+    public ApiResponse(
+            int httpStatus,
+            String reasonPhrase,
+            String payload,
+            Map<String, String> headers) {
         this.httpStatus = httpStatus;
         this.reasonPhrase = reasonPhrase;
         this.payload = payload;
         this.headers = ImmutableMap.copyOf(headers);
-        // Convert headers to lower case so they can be looked up in a case insensitive manner
-        Map<String, String> caseInsensitiveHeaders = new HashMap<String, String>();
-        for (Map.Entry<String, String> header : this.headers.entrySet()) {
-            caseInsensitiveHeaders.put(header.getKey().toLowerCase(Locale.ENGLISH), header.getValue());
-        }
-        this.caseInsensitiveHeaders = ImmutableMap.copyOf(caseInsensitiveHeaders);
     }
 
     /**
@@ -124,22 +119,12 @@ public class ApiResponse {
 
     /**
      * Get the header value with the given name
-     *
+     * 
      * @param name The name of the header. As per the RFC, header names are case
-     *             insensitive
+     *            insensitive
      * @return The value, or null if no header with that name was found
      */
     public String getHeader(String name) {
-        return caseInsensitiveHeaders.get(name.toLowerCase());
+        return headers.get(name.toLowerCase());
     }
-
-    /**
-     * Get all the headers as a map
-     *
-     * @return The headers
-     */
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
 }

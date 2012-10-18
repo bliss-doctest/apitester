@@ -4,12 +4,16 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
 /**
@@ -93,17 +97,52 @@ public class ApiTestUtil {
         assertTrue(response.isStatusNotFound());
     }
 
-
+    /**
+     * Transforms an {@link HttpResponse} object to an {@link ApiResponse}
+     * 
+     * @param httpResponse
+     * @return
+     * @throws IOException
+     */
     public static ApiResponse convertToApiResponse(HttpResponse httpResponse) throws IOException {
         int httpStatus = httpResponse.getStatusLine().getStatusCode();
         HttpEntity entity = httpResponse.getEntity();
         String rawResponse = entity != null ? IOUtils.toString(entity.getContent()) : "";
 
-        Map<String, String> headers = new HashMap<String, String>();
-        for (Header header : httpResponse.getAllHeaders()) {
-            headers.put(header.getName(), header.getValue());
-        }
+        Map<String, String> headers = transformHeaders(httpResponse.getAllHeaders());
 
-        return new ApiResponse(httpStatus, httpResponse.getStatusLine().getReasonPhrase(), rawResponse, headers);
+        return new ApiResponse(httpStatus, httpResponse.getStatusLine().getReasonPhrase(),
+                rawResponse, headers);
+    }
+
+    /**
+     * transform the original headers from the request or response to a map
+     * and set the name of the headers to lower case
+     * 
+     * @param headers
+     * @return transformedHeaders
+     */
+    private static Map<String, String> transformHeaders(Header[] headers) {
+        Map<String, String> transformedHeaders = new HashMap<String, String>();
+        for (Header header : headers) {
+            transformedHeaders.put(header.getName().toLowerCase(Locale.ENGLISH), header.getValue());
+        }
+        return transformedHeaders;
+    }
+
+    /**
+     * Transforms an {@link HttpRequest} object to an {@link ApiRequest}. <br/>
+     * For more convenience, this
+     * function takes the uri of the request as {@link URI} parameter because it is much easier to
+     * use than the {@link String} uri which is contained in the {@link HttpRequest} object.
+     * 
+     * @param the uri of the request in {@link URI} object
+     * @param httpRequest apache request object
+     * @return
+     * @throws URISyntaxException
+     */
+    public static ApiRequest convertToApiRequest(URI uri, HttpRequest httpRequest) {
+        return new ApiRequest(uri, httpRequest.getRequestLine().getMethod(),
+                transformHeaders(httpRequest.getAllHeaders()));
     }
 }

@@ -18,19 +18,19 @@ import de.devbliss.apitester.factory.GetFactory;
  */
 public class Getter {
 
-    public static ApiResponse get(URI uri) throws IOException {
+    public static Context get(URI uri) throws IOException {
         return get(uri, null, null);
     }
 
-    public static ApiResponse get(URI uri, GetFactory getFactory) throws IOException {
+    public static Context get(URI uri, GetFactory getFactory) throws IOException {
         return get(uri, null, getFactory);
     }
 
-    public static ApiResponse get(URI uri, TestState testState) throws IOException {
+    public static Context get(URI uri, TestState testState) throws IOException {
         return get(uri, testState, null);
     }
 
-    public static ApiResponse get(URI uri, TestState testState, GetFactory getFactory)
+    public static Context get(URI uri, TestState testState, GetFactory getFactory)
             throws IOException {
 
         if (getFactory == null) {
@@ -43,6 +43,8 @@ public class Getter {
 
         HttpGet request = getFactory.createGetRequest(uri);
         HttpResponse response = testState.client.execute(request);
-        return ApiTestUtil.convertToApiResponse(response);
+        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, request);
+        return new Context(apiResponse, apiRequest);
     }
 }
