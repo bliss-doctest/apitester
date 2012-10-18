@@ -62,7 +62,7 @@ public class Putter {
         HttpPut request = putFactory.createPutRequest(uri, payload);
         HttpResponse response = testState.client.execute(request);
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
-        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(request);
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, request);
         return new Context(apiResponse, apiRequest);
     }
 }

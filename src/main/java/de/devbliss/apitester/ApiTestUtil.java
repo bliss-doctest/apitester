@@ -4,6 +4,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -129,13 +131,18 @@ public class ApiTestUtil {
     }
 
     /**
-     * Transforms an {@link HttpRequest} object to an {@link ApiRequest}
+     * Transforms an {@link HttpRequest} object to an {@link ApiRequest}. <br/>
+     * For more convenience, this
+     * function takes the uri of the request as {@link URI} parameter because it is much easier to
+     * use than the {@link String} uri which is contained in the {@link HttpRequest} object.
      * 
-     * @param httpRequest
+     * @param the uri of the request in {@link URI} object
+     * @param httpRequest apache request object
      * @return
+     * @throws URISyntaxException
      */
-    public static ApiRequest convertToApiRequest(HttpRequest httpRequest) {
-        return new ApiRequest(httpRequest.getRequestLine().getUri(), transformHeaders(httpRequest
-                .getAllHeaders()));
+    public static ApiRequest convertToApiRequest(URI uri, HttpRequest httpRequest) {
+        return new ApiRequest(uri, httpRequest.getRequestLine().getMethod(),
+                transformHeaders(httpRequest.getAllHeaders()));
     }
 }

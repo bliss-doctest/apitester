@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URI;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -30,7 +31,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ApiTestUtilUnitTest {
 
-    private static final String URI = "www.rofl.de/lol";
     private static final String HEADER1 = "CONTENT-TYPE";
     private static final String HEADER2 = "cookie";
     private static final String VALUE1 = "application/json";
@@ -49,35 +49,34 @@ public class ApiTestUtilUnitTest {
     private HttpEntity httpEntity;
 
     private Header[] headers;
+    private URI uri;
 
     @Before
-    public void setUp() throws IllegalStateException, IOException {
-        
+    public void setUp() throws Exception {
+        uri = new URI("www.rofl.de/lol");
         headers = new Header[2];
         headers[0] = new BasicHeader(HEADER1, VALUE1);
         headers[1] = new BasicHeader(HEADER2, VALUE2);
 
         when(httpRequest.getRequestLine()).thenReturn(requestLine);
-        when(requestLine.getUri()).thenReturn(URI);
         when(httpRequest.getAllHeaders()).thenReturn(headers);
 
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
         when(httpResponse.getAllHeaders()).thenReturn(headers);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE);
-        
-        when(httpResponse.getEntity()).thenReturn(null);
 
+        when(httpResponse.getEntity()).thenReturn(null);
     }
 
     @Test
     public void testConvertToApiRequest() {
-        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(httpRequest);
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, httpRequest);
         assertEquals(VALUE1, apiRequest.getHeader(HEADER1));
         assertEquals(VALUE2, apiRequest.getHeader(HEADER2));
         assertFalse(apiRequest.headers.containsKey(HEADER1));
-        assertEquals(URI, apiRequest.uri);
+        assertEquals(uri, apiRequest.uri);
     }
-    
+
     @Test
     public void testConvertToApiResponse() throws IOException {
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(httpResponse);

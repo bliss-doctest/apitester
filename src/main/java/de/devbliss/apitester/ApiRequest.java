@@ -1,5 +1,6 @@
 package de.devbliss.apitester;
 
+import java.net.URI;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
@@ -16,10 +17,12 @@ import com.google.common.collect.ImmutableMap;
 public class ApiRequest {
 
     public final Map<String, String> headers;
-    public final String uri;
+    public final URI uri;
+    public final String httpMethod;
 
-    public ApiRequest(String uri, Map<String, String> headers) {
+    public ApiRequest(URI uri, String httpMethod, Map<String, String> headers) {
         this.uri = uri;
+        this.httpMethod = httpMethod;
         this.headers = ImmutableMap.copyOf(headers);
     }
 
