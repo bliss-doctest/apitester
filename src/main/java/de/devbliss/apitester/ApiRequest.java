@@ -1,6 +1,7 @@
 package de.devbliss.apitester;
 
 import java.net.URI;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
@@ -17,13 +18,19 @@ import com.google.common.collect.ImmutableMap;
 public class ApiRequest {
 
     public final Map<String, String> headers;
+    public final Map<String, String> cookies;
     public final URI uri;
     public final String httpMethod;
 
-    public ApiRequest(URI uri, String httpMethod, Map<String, String> headers) {
+    public ApiRequest(
+            URI uri,
+            String httpMethod,
+            Map<String, String> headers,
+            Map<String, String> cookies) {
         this.uri = uri;
         this.httpMethod = httpMethod;
         this.headers = ImmutableMap.copyOf(headers);
+        this.cookies = ImmutableMap.copyOf(cookies);
     }
 
     /**
@@ -34,6 +41,16 @@ public class ApiRequest {
      * @return The value, or null if no header with that name was found
      */
     public String getHeader(String name) {
-        return headers.get(name.toLowerCase());
+        return headers.get(name.toLowerCase(Locale.ENGLISH));
+    }
+
+    /**
+     * Get the cookie value with the given name
+     * 
+     * @param name The name of the cookie.
+     * @return The value, or null if no cookie with that name was found
+     */
+    public String getCookie(String name) {
+        return cookies.get(name.toLowerCase(Locale.ENGLISH));
     }
 }

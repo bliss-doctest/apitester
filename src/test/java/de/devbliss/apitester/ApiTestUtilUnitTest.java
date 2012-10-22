@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -31,11 +33,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ApiTestUtilUnitTest {
 
-    private static final String HEADER1 = "CONTENT-TYPE";
-    private static final String HEADER2 = "cookie";
-    private static final String VALUE1 = "application/json";
-    private static final String VALUE2 = "application/html";
+    private static final String HEADER_NAME_1 = "CONTENT-TYPE";
+    private static final String HEADER_NAME_2 = "cookie";
+    private static final String HEADER_VALUE_1 = "application/json";
+    private static final String HEADER_VALUE_2 = "application/html";
     private static final int STATUS_CODE = 200;
+    private static final String COOKIE_NAME_1 = "cookie1";
+    private static final String COOKIE_VALUE_1 = "cookie2";
+    private static final String COOKIE_NAME_2 = "cookie_value_1";
+    private static final String COOKIE_VALUE_2 = "cookie_value_2";
+    private static final String HTTP_METHOD = "http_method";
 
     @Mock
     private StatusLine statusLine;
@@ -48,21 +55,27 @@ public class ApiTestUtilUnitTest {
     @Mock
     private HttpEntity httpEntity;
 
-    private Header[] headers;
+    private Header[] responseHeaders;
     private URI uri;
+    private List<Cookie> requestCookies;
 
     @Before
     public void setUp() throws Exception {
         uri = new URI("www.rofl.de/lol");
-        headers = new Header[2];
-        headers[0] = new BasicHeader(HEADER1, VALUE1);
-        headers[1] = new BasicHeader(HEADER2, VALUE2);
+        responseHeaders = new Header[2];
+        responseHeaders[0] = new BasicHeader(HEADER_NAME_1, HEADER_VALUE_1);
+        responseHeaders[1] = new BasicHeader(HEADER_NAME_2, HEADER_VALUE_2);
+
+        requestCookies = new ArrayList<Cookie>();
+        requestCookies.add(new Cookie(COOKIE_NAME_1, COOKIE_VALUE_1));
+        requestCookies.add(new Cookie(COOKIE_NAME_2, COOKIE_VALUE_2));
 
         when(httpRequest.getRequestLine()).thenReturn(requestLine);
-        when(httpRequest.getAllHeaders()).thenReturn(headers);
+        when(requestLine.getMethod()).thenReturn(HTTP_METHOD);
+        when(httpRequest.getAllHeaders()).thenReturn(responseHeaders);
 
         when(httpResponse.getStatusLine()).thenReturn(statusLine);
-        when(httpResponse.getAllHeaders()).thenReturn(headers);
+        when(httpResponse.getAllHeaders()).thenReturn(responseHeaders);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE);
 
         when(httpResponse.getEntity()).thenReturn(null);
@@ -70,11 +83,13 @@ public class ApiTestUtilUnitTest {
 
     @Test
     public void testConvertToApiRequest() {
-        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, httpRequest);
-        assertEquals(VALUE1, apiRequest.getHeader(HEADER1));
-        assertEquals(VALUE2, apiRequest.getHeader(HEADER2));
-        assertFalse(apiRequest.headers.containsKey(HEADER1));
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, httpRequest, requestCookies);
+        assertEquals(HEADER_VALUE_1, apiRequest.getHeader(HEADER_NAME_1));
+        assertEquals(HEADER_VALUE_2, apiRequest.getHeader(HEADER_NAME_2));
+        assertEquals(COOKIE_VALUE_1, apiRequest.getCookie(COOKIE_NAME_1));
+        assertEquals(COOKIE_VALUE_2, apiRequest.getCookie(COOKIE_NAME_2));
         assertEquals(uri, apiRequest.uri);
+        assertEquals(HTTP_METHOD, apiRequest.httpMethod);
     }
 
     @Test
@@ -82,8 +97,8 @@ public class ApiTestUtilUnitTest {
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(httpResponse);
         assertTrue(apiResponse.payload.isEmpty());
         assertEquals(STATUS_CODE, apiResponse.httpStatus);
-        assertEquals(VALUE1, apiResponse.getHeader(HEADER1));
-        assertEquals(VALUE2, apiResponse.getHeader(HEADER2));
-        assertFalse(apiResponse.headers.containsKey(HEADER1));
+        assertEquals(HEADER_VALUE_1, apiResponse.getHeader(HEADER_NAME_1));
+        assertEquals(HEADER_VALUE_2, apiResponse.getHeader(HEADER_NAME_2));
+        assertFalse(apiResponse.headers.containsKey(HEADER_NAME_1));
     }
 }

@@ -1,14 +1,13 @@
 package de.devbliss.apitester;
 
-import com.google.inject.Provides;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Provides;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
@@ -41,12 +40,12 @@ public class ApiTesterModule extends AbstractModule {
     @Provides
     public TestState provideTestState(CookieStore cookieStore) {
         // when creating an HttpClient, we need to also create a CookieStore if we ever want to
-        // access its cookies, and both of these need to be bound together.  If they were bound
+        // access its cookies, and both of these need to be bound together. If they were bound
         // as singleton, that wouldn't work, because you could only ever have one session, you
-        // couldn't have a test client, admin client, user client, friend client etc.  If they
+        // couldn't have a test client, admin client, user client, friend client etc. If they
         // are not bound as singleton, then there would be no way to access them together, you
         // could have a cookie store injected, and a client injected, but it wouldn't be the
-        // cookie store for that client.  So, we can't have Guice manage them.  Instead, we
+        // cookie store for that client. So, we can't have Guice manage them. Instead, we
         // have Guice manage the TestState, not singleton, and instantiate the client ourselves.
         DefaultHttpClient client = new DefaultHttpClient();
         client.setCookieStore(cookieStore);
