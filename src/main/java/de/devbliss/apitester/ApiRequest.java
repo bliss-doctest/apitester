@@ -17,8 +17,8 @@ import com.google.common.collect.ImmutableMap;
  */
 public class ApiRequest {
 
-    private final Map<String, String> headers;
-    private final Map<String, String> cookies;
+    public final Map<String, String> headers;
+    public final Map<String, String> cookies;
     public final URI uri;
     public final String httpMethod;
 
