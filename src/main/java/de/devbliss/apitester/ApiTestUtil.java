@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -101,6 +102,7 @@ public class ApiTestUtil {
      * Transforms an {@link HttpResponse} object to an {@link ApiResponse}
      * 
      * @param httpResponse
+     * @param cookies
      * @return
      * @throws IOException
      */
@@ -109,10 +111,8 @@ public class ApiTestUtil {
         HttpEntity entity = httpResponse.getEntity();
         String rawResponse = entity != null ? IOUtils.toString(entity.getContent()) : "";
 
-        Map<String, String> headers = transformHeaders(httpResponse.getAllHeaders());
-
         return new ApiResponse(httpStatus, httpResponse.getStatusLine().getReasonPhrase(),
-                rawResponse, headers);
+                rawResponse, transformHeaders(httpResponse.getAllHeaders()));
     }
 
     /**
@@ -138,11 +138,28 @@ public class ApiTestUtil {
      * 
      * @param the uri of the request in {@link URI} object
      * @param httpRequest apache request object
+     * @param cookies cookies used by the http client to make the request
      * @return
      * @throws URISyntaxException
      */
-    public static ApiRequest convertToApiRequest(URI uri, HttpRequest httpRequest) {
+    public static ApiRequest convertToApiRequest(URI uri, HttpRequest httpRequest,
+            List<Cookie> cookies) {
         return new ApiRequest(uri, httpRequest.getRequestLine().getMethod(),
-                transformHeaders(httpRequest.getAllHeaders()));
+                transformHeaders(httpRequest.getAllHeaders()), transformCookies(cookies));
+    }
+
+    /**
+     * transform a list of {@link Cookie} to a {@link Map} and set the name of the cookies to lower
+     * case
+     * 
+     * @param cookies
+     * @return transformedCookies map<cookie.name, cookie.value>
+     */
+    private static Map<String, String> transformCookies(List<Cookie> cookies) {
+        Map<String, String> transformedCookies = new HashMap<String, String>();
+        for (Cookie cookie : cookies) {
+            transformedCookies.put(cookie.getName().toLowerCase(Locale.ENGLISH), cookie.getValue());
+        }
+        return transformedCookies;
     }
 }

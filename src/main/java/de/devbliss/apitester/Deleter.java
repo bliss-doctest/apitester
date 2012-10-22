@@ -67,9 +67,14 @@ public class Deleter {
             request = deleteFactory.createDeleteRequest(uri);
         }
 
+        // IMPORTANT: we have to get the cookies from the testState before making the request
+        // because this request could add some cookie to the testState (e.g: the response could have
+        // a Set-Cookie header)
+        ApiRequest apiRequest =
+                ApiTestUtil.convertToApiRequest(uri, request, testState.getCookies());
+
         HttpResponse response = testState.client.execute(request);
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
-        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(uri, request);
         return new Context(apiResponse, apiRequest);
     }
 }
