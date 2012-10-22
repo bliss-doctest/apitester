@@ -3,6 +3,10 @@ CHANGES
 
 develop
 -------
+- add a map containing the cookies in the apiRequest object
+
+Version 0.6.3: 2012-10-19
+-------------------------
 - create the context object which contains the response and the request and is returned by the requests
 
 Version 0.6.2: 2012-08-17
