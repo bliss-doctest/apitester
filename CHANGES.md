@@ -3,6 +3,9 @@ CHANGES
 
 develop
 -------
+
+Version 0.6.4: 2012-10-23
+-------------------------
 - add a map containing the cookies in the apiRequest object
 
 Version 0.6.3: 2012-10-19
