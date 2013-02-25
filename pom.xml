@@ -8,15 +8,46 @@
     </parent>
 
     <groupId>de.devbliss.apitester</groupId>
+    <name>Apitester</name>
     <artifactId>apitester</artifactId>
     <version>0.6.5-SNAPSHOT</version>
-    <description>bla TODO</description>
+    <description></description>
     <url>https://github.com/devbliss/apitester</url>
     <organization>
-        <name>DevBliss</name>
-        <url>http://devbliss.de</url>
+        <name>devbliss GmbH</name>
+        <url>http://devbliss.com</url>
     </organization>
     <inceptionYear>2012</inceptionYear>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Necessary because according to the docs, site filtering doesn't 
+            work for properties with dots in them -->
+        <siteProjectVersion>${project.version}</siteProjectVersion>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -70,70 +101,60 @@
         </dependency>
     </dependencies>
 
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- Necessary because according to the docs, site filtering doesn't 
-            work for properties with dots in them -->
-        <siteProjectVersion>${project.version}</siteProjectVersion>
-    </properties>
-
-
     <developers>
         <developer>
             <name>Bastien Mary</name>
             <email>bastien.mary@devbliss.com</email>
-            <url>http://www.devbliss.de</url>
+            <url>http://www.devbliss.com</url>
             <roles>
                 <role>Author</role>
             </roles>
-            <organization>DevBliss</organization>
+            <organization>devbliss GmbH</organization>
         </developer>
         <developer>
             <name>Henning Schuetz</name>
             <email>henning.schuetz@devbliss.com</email>
-            <url>http://www.devbliss.de</url>
+            <url>http://www.devbliss.com</url>
             <roles>
                 <role>Author</role>
             </roles>
-            <organization>DevBliss</organization>
+            <organization>devbliss GmbH</organization>
         </developer>
         <developer>
             <name>James Roper</name>
             <email>james.roper@devbliss.com</email>
-            <url>http://www.devbliss.de</url>
+            <url>http://www.devbliss.com</url>
             <roles>
                 <role>Author</role>
             </roles>
-            <organization>DevBliss</organization>
+            <organization>devbliss GmbH</organization>
         </developer>
         <developer>
             <name>Marco Reinwarth</name>
             <email>marco.reinwarth@devbliss.com</email>
-            <url>http://www.devbliss.de</url>
+            <url>http://www.devbliss.com</url>
             <roles>
                 <role>Author</role>
             </roles>
-            <organization>DevBliss</organization>
+            <organization>devbliss GmbH</organization>
         </developer>
         <developer>
             <name>Raphael Andre Bauer</name>
             <email>raphael.bauer@devbliss.com</email>
-            <url>http://www.devbliss.de</url>
+            <url>http://www.devbliss.com</url>
             <roles>
                 <role>Author</role>
             </roles>
-            <organization>DevBliss</organization>
+            <organization>devbliss GmbH</organization>
         </developer>
         <developer>
-            <name>Marcel René Bankmann</name>
+            <name>Marcel Bankmann</name>
             <email>marcel.bankmann@devbliss.com</email>
             <url>http://www.devbliss.com</url>
             <roles>
                 <role>Author</role>
             </roles>
-            <organization>DevBliss</organization>
+            <organization>devbliss GmbH</organization>
         </developer>
     </developers>
 
