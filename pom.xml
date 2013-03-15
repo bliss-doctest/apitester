@@ -11,7 +11,7 @@
     <name>Apitester</name>
     <artifactId>apitester</artifactId>
     <version>0.6.5-SNAPSHOT</version>
-    <description></description>
+    <description>Apache HttpClient wrapper to make the most common tasks for testing a REST API more convenient</description>
     <url>https://github.com/devbliss/apitester</url>
     <organization>
         <name>devbliss GmbH</name>
@@ -37,6 +37,33 @@
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                            <version>2.4</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.8</version>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.ju-n.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
@@ -98,6 +125,11 @@
             <groupId>com.fasterxml</groupId>
             <artifactId>jackson-xml-databind</artifactId>
             <version>0.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.19</version>
         </dependency>
     </dependencies>
 
