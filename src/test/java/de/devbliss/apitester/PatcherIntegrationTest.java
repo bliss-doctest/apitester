@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -39,18 +39,18 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.factory.PostFactory;
-import de.devbliss.apitester.factory.impl.DefaultPostFactory;
+import de.devbliss.apitester.factory.PatchFactory;
+import de.devbliss.apitester.factory.impl.DefaultPatchFactory;
 
 /**
- * Tests the methods of {@link Poster} and its delegates against an embedded local instance of
+ * Tests the methods of {@link Patcher} and its delegates against an embedded local instance of
  * {@link DummyApiServer} with "real" HTTP requests.
  *
- * @author hschuetz
+ * @author mbankmann
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PosterIntegrationTest {
+public class PatcherIntegrationTest {
 
     private static final String HEADER_VALUE1 = "header_value1";
     private static final String HEADER_NAME1 = "header_name1";
@@ -93,150 +93,151 @@ public class PosterIntegrationTest {
     }
 
     @Test
-    public void testPostOk() throws Exception {
+    public void testPatchOk() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri);
+        Context wrapper = Patcher.patch(uri);
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
+
     @Test
-    public void testPostOkWithPayload() throws Exception {
+    public void testPatchOkWithPayload() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, payload);
+        Context wrapper = Patcher.patch(uri, payload);
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostOkWithOwnPostFactory() throws Exception {
+    public void testPatchOkWithOwnPatchFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, new DefaultPostFactory());
+        Context wrapper = Patcher.patch(uri, new DefaultPatchFactory());
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostOkWithOwnTestState() throws Exception {
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, testState);
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
-        ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
-
-    @Test
-    public void testPostOkWithOwnPostFactoryAndTestState() throws Exception {
+    public void testPatchOkWithOwnTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, new DefaultPostFactory(), testState);
+        Context wrapper = Patcher.patch(uri, testState);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostOkWithPayloadAndOwnPostFactory() throws Exception {
+    public void testPatchOkWithOwnPatchFactoryAndTestState() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        TestState testState = ApiTesterModule.createTestState();
+        Context wrapper = Patcher.patch(uri, new DefaultPatchFactory(), testState);
+        ApiResponse response = wrapper.apiResponse;
+        ApiRequest request = wrapper.apiRequest;
+        ApiTestUtil.assertOk(response);
+        assertEquals(uri, request.uri);
+        assertEquals("PATCH", request.httpMethod);
+    }
+
+    @Test
+    public void testPatchOkWithPayloadAndOwnPatchFactory() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, payload, new DefaultPostFactory());
+        Context wrapper = Patcher.patch(uri, payload, new DefaultPatchFactory());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostOkWithPayloadAndOwnTestState() throws Exception {
+    public void testPatchOkWithPayloadAndOwnTestState() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState);
+        Context wrapper = Patcher.patch(uri, payload, testState);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostOkWithPayloadAndOwnPostFactoryAndTestState() throws Exception {
+    public void testPatchOkWithPayloadAndOwnPatchFactoryAndTestState() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory(), null);
+        Context wrapper = Patcher.patch(uri, testState, new DefaultPatchFactory(), payload, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
         assertEquals(payload, result);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostWithCustomPostFactory() throws Exception {
+    public void testPatchWithCustomPatchFactory() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState, getCustomFactoryWithHeaders(), null);
+        Context wrapper = Patcher.patch(uri, testState, getCustomFactoryWithHeaders(), payload, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
         assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostWithHeaders() throws Exception {
+    public void testPatchWithHeaders() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri,payload,testState,createCustomHeaders());
+        Context wrapper = Patcher.patch(uri,payload,testState,createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
         assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
     }
 
     @Test
-    public void testPostWithCookiesAndHeaders() throws Exception {
+    public void testPatchWithCookiesAndHeaders() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context wrapper = Poster.post(uri, payload, testState, getCustomFactoryWithHeaders(), null);
+        Context wrapper = Patcher.patch(uri, testState, getCustomFactoryWithHeaders(), payload, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
         assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals("PATCH", request.httpMethod);
         assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
         assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
         assertEquals(COOKIE_VALUE_1, request.getCookie(COOKIE_NAME_1));
@@ -247,11 +248,11 @@ public class PosterIntegrationTest {
 
     }
 
-    private PostFactory getCustomFactoryWithHeaders() {
-        return new PostFactory() {
+    private PatchFactory getCustomFactoryWithHeaders() {
+        return new PatchFactory() {
 
-            public HttpPost createPostRequest(URI uri, Object payload) throws IOException {
-                HttpPost request = new HttpPost(uri);
+            public HttpPatch createPatchRequest(URI uri, Object payload) throws IOException {
+                HttpPatch request = new HttpPatch(uri);
                 request.setHeader(HEADER_NAME1, HEADER_VALUE1);
                 request.setHeader(HEADER_NAME2, HEADER_VALUE2);
                 return request;

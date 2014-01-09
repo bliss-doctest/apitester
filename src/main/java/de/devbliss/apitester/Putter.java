@@ -16,6 +16,7 @@ package de.devbliss.apitester;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
@@ -27,42 +28,58 @@ import de.devbliss.apitester.factory.PutFactory;
  * Contains static methods to perform PUT requests. If you want to make more requests in a series
  * sharing the same {@link TestState} and using the same {@link DeleteFactory}, consider using
  * {@link ApiTest} which is wrapping that stuff for you.
- * 
+ *
  * @author hschuetz
- * 
+ *
  */
 public class Putter {
 
+	public static Context put(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return put(uri, null, null, null, additionalHeaders);
+    }
+
+    public static Context put(URI uri, TestState testState, Map<String, String> additionalHeaders) throws IOException {
+        return put(uri, testState, null, null, additionalHeaders);
+    }
+
+    public static Context put(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return put(uri, null, null, payload, additionalHeaders);
+    }
+
+    public static Context put(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders) throws IOException {
+        return put(uri, testState, null, payload, additionalHeaders);
+    }
+
     public static Context put(URI uri) throws IOException {
-        return put(uri, null, null, null);
+        return put(uri, null, null, null, null);
     }
 
     public static Context put(URI uri, PutFactory putFactory) throws IOException {
-        return put(uri, null, putFactory, null);
+        return put(uri, null, putFactory, null, null);
     }
 
     public static Context put(URI uri, TestState testState) throws IOException {
-        return put(uri, testState, null, null);
+        return put(uri, testState, null, null, null);
     }
 
     public static Context put(URI uri, TestState testState, PutFactory putFactory)
             throws IOException {
-        return put(uri, testState, putFactory, null);
+        return put(uri, testState, putFactory, null, null);
     }
 
     public static Context put(URI uri, Object payload) throws IOException {
-        return put(uri, null, null, payload);
+        return put(uri, null, null, payload, null);
     }
 
     public static Context put(URI uri, Object payload, PutFactory putFactory) throws IOException {
-        return put(uri, null, putFactory, payload);
+        return put(uri, null, putFactory, payload, null);
     }
 
     public static Context put(URI uri, Object payload, TestState testState) throws IOException {
-        return put(uri, testState, null, payload);
+        return put(uri, testState, null, payload, null);
     }
 
-    public static Context put(URI uri, TestState testState, PutFactory putFactory, Object payload)
+    public static Context put(URI uri, TestState testState, PutFactory putFactory, Object payload, Map<String, String> additionalHeaders)
             throws IOException {
 
         if (putFactory == null) {
@@ -74,6 +91,12 @@ public class Putter {
         }
 
         HttpPut request = putFactory.createPutRequest(uri, payload);
+
+        if(additionalHeaders != null) {
+        	for (String headerName : additionalHeaders.keySet()) {
+        		request.addHeader(headerName, additionalHeaders.get(headerName));
+			}
+        }
 
         // IMPORTANT: we have to get the cookies from the testState before making the request
         // because this request could add some cookie to the testState (e.g: the response could have

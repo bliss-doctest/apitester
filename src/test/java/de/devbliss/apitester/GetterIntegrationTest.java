@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
@@ -43,9 +45,9 @@ import de.devbliss.apitester.factory.impl.DefaultGetFactory;
 /**
  * Tests the methods of {@link Getter} and its delegates against an embedded local instance of
  * {@link DummyApiServer} with "real" HTTP requests.
- * 
+ *
  * @author hschuetz
- * 
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GetterIntegrationTest {
@@ -142,10 +144,24 @@ public class GetterIntegrationTest {
     }
 
     @Test
+    public void testGetWithCustomFactory() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        TestState testState = ApiTesterModule.createTestState();
+        Context context = Getter.get(uri, testState, getCustomFactoryWithHeaders());
+        ApiResponse response = context.apiResponse;
+        ApiRequest request = context.apiRequest;
+        ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
+        assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
+        assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
+    }
+
+    @Test
     public void testGetWithHeaders() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context context = Getter.get(uri, testState, getGetFactoryWithHeaders());
+        Context context = Getter.get(uri, testState, createCustomHeaders());
         ApiResponse response = context.apiResponse;
         ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -159,7 +175,7 @@ public class GetterIntegrationTest {
     public void testGetWithCookiesAndHeaders() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context context = Getter.get(uri, testState, getGetFactoryWithHeaders());
+        Context context = Getter.get(uri, testState, getCustomFactoryWithHeaders());
         ApiResponse response = context.apiResponse;
         ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -174,7 +190,14 @@ public class GetterIntegrationTest {
         assertNull(request.getHeader(COOKIE_NAME_1));
     }
 
-    private GetFactory getGetFactoryWithHeaders() {
+    private Map<String,String> createCustomHeaders() {
+    	Map<String, String> returnValue = new HashMap<String, String>();
+    	returnValue.put(HEADER_NAME1, HEADER_VALUE1);
+    	returnValue.put(HEADER_NAME2, HEADER_VALUE2);
+    	return returnValue;
+    }
+
+    private GetFactory getCustomFactoryWithHeaders() {
         return new GetFactory() {
 
             public HttpGet createGetRequest(URI uri) throws IOException {

@@ -3,6 +3,8 @@ CHANGES
 
 develop
 -------
+- add additionalHeaders parameter to all http methods
+- add new http method PATCH
 
 Version 0.6.4: 2012-10-23
 -------------------------

@@ -39,10 +39,10 @@ import de.devbliss.apitester.ApiTest;
  * <li><strong>POST</strong>-requests: same like GET, but simply returns the content of the request
  * body in case desired response code is 200 OK</li>
  * </ul>
- * 
- * 
+ *
+ *
  * @author hschuetz
- * 
+ *
  */
 public class DummyRequestHandler extends AbstractHandler {
     static final String GET_PATH_PREFIX = "/gettest/";
@@ -60,7 +60,9 @@ public class DummyRequestHandler extends AbstractHandler {
                 handleGet(target, response);
                 break;
             case POST:
-                handlePost(target, request, response);
+            case PATCH:
+            case PUT:
+            	handlePostPatchPut(target, request, response);
                 break;
         }
 
@@ -82,7 +84,7 @@ public class DummyRequestHandler extends AbstractHandler {
         }
     }
 
-    private void handlePost(String target, HttpServletRequest request, HttpServletResponse response)
+    private void handlePostPatchPut(String target, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         try {
@@ -98,6 +100,8 @@ public class DummyRequestHandler extends AbstractHandler {
             handleException(e, response);
         }
     }
+
+
 
     private void handleException(Exception e, HttpServletResponse response) throws IOException {
         response.setContentType(CONTENT_TYPE_ERROR);

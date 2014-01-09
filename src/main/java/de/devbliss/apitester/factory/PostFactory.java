@@ -20,15 +20,15 @@ import java.net.URI;
 import org.apache.http.client.methods.HttpPost;
 
 /**
- * Creates POST requests. Override this if you need to add e.g. custom headers.
- * 
+ * Creates POST requests. Override this if you need to add custom behaviour.
+ *
  * @author hschuetz
- * 
+ *
  */
 public interface PostFactory {
 
     /**
-     * 
+     *
      * @param uri
      * @param payload will end up as data in response body, may be <code>null</code> if there is no
      *            use for a payload
