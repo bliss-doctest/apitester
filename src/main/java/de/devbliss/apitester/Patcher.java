@@ -26,10 +26,10 @@ import de.devbliss.apitester.factory.PatchFactory;
 
 /**
  * Contains static methods to perform PATCH requests. If you want to make more requests in a series
- * sharing the same {@link TestState} and using the same {@link DeleteFactory}, consider using
+ * sharing the same {@link TestState} and using the same {@link PatchFactory}, consider using
  * {@link ApiTest} which is wrapping that stuff for you.
  *
- * @author hschuetz
+ * @author mbankmann
  *
  */
 public class Patcher {
