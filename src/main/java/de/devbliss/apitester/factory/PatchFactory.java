@@ -17,16 +17,25 @@ package de.devbliss.apitester.factory;
 import java.io.IOException;
 import java.net.URI;
 
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPut;
 
 /**
- * Creates GET requests. Override this if you need to add custom behaviour.
+ * Creates PATCH requests. Override this if you need to add custom behaviour.
  *
- * @author hschuetz
+ * @author mbankmann
  *
  */
-public interface GetFactory {
+public interface PatchFactory {
 
-    HttpGet createGetRequest(URI uri) throws IOException;
+    /**
+     *
+     * @param uri
+     * @param payload will end up as data in response body, may be <code>null</code> if there is no
+     *            use for a payload
+     * @return
+     * @throws IOException
+     */
+	HttpPatch createPatchRequest(URI uri, Object payload) throws IOException;
 
 }

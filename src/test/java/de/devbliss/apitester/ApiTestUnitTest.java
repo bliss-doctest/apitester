@@ -139,7 +139,7 @@ public class ApiTestUnitTest {
         when(myGetFactory.createGetRequest(uri)).thenReturn(httpGet);
 
         ApiTest apiTest = createApiTest();
-        apiTest.get(uri, myGetFactory);
+        apiTest.get(uri, myGetFactory, null);
         verify(myGetFactory).createGetRequest(eq(uri));
     }
 
@@ -159,7 +159,7 @@ public class ApiTestUnitTest {
 
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
-        apiTest.post(uri, payload, myPostFactory);
+        apiTest.post(uri, payload, myPostFactory, null);
         verify(myPostFactory).createPostRequest(eq(uri), eq(payload));
     }
 
@@ -179,7 +179,7 @@ public class ApiTestUnitTest {
 
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
-        apiTest.put(uri, payload, myPutFactory);
+        apiTest.put(uri, payload, myPutFactory, null);
         verify(myPutFactory).createPutRequest(eq(uri), eq(payload));
     }
 
@@ -197,7 +197,7 @@ public class ApiTestUnitTest {
         when(myDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
 
         ApiTest apiTest = createApiTest();
-        apiTest.delete(uri, null, myDeleteFactory);
+        apiTest.delete(uri, null, myDeleteFactory, null);
         verify(myDeleteFactory).createDeleteRequest(eq(uri));
     }
 
@@ -219,7 +219,7 @@ public class ApiTestUnitTest {
 
         ApiTest apiTest = createApiTest();
         Object payload = new Object();
-        apiTest.delete(uri, payload, myDeleteFactory);
+        apiTest.delete(uri, payload, myDeleteFactory, null);
         verify(myDeleteFactory).createDeleteRequest(eq(uri), eq(payload));
     }
 

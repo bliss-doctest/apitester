@@ -16,12 +16,14 @@ package de.devbliss.apitester;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
+import de.devbliss.apitester.factory.PatchFactory;
 import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 
@@ -29,10 +31,10 @@ import de.devbliss.apitester.factory.PutFactory;
  * Entrypoint class for performing api calls.
  * It keeps the teststate including http client instance so your client side session, cookies etc.
  * should be kept as long as you use the same {@link ApiTest} instance.
- * 
+ *
  * You may use this either as superclass for your own tests or instantiate it within your tests if
  * you need a different superclass for whatever reason.
- * 
+ *
  * <h1>Instantiation</h1>
  * <ul>
  * <li>
@@ -59,9 +61,9 @@ import de.devbliss.apitester.factory.PutFactory;
  * </ul>
  * </li>
  * </ul>
- * 
+ *
  * @author hschuetz, mreinwarth, bmary, mbankmann
- * 
+ *
  */
 public class ApiTest {
 
@@ -69,16 +71,18 @@ public class ApiTest {
     public static final String DELETE_FACTORY = "deleteFactory";
     public static final String POST_FACTORY = "postFactory";
     public static final String PUT_FACTORY = "putFactory";
+    public static final String PATCH_FACTORY = "patchFactory";
     public static final String TEST_STATE = "testState";
 
     private GetFactory getDefaultFactory;
     private PostFactory postDefaultFactory;
     private DeleteFactory deleteDefaultFactory;
     private PutFactory putDefaultFactory;
+    private PatchFactory patchDefaultFactory;
     private TestState testState;
 
     public enum HTTP_REQUEST {
-        POST, GET, PUT, DELETE;
+        POST, GET, PUT, DELETE, PATCH;
     }
 
     @Inject(optional = true)
@@ -100,6 +104,12 @@ public class ApiTest {
     public void setDefaultPutFactory(@Named(PUT_FACTORY) PutFactory putFactory) {
         this.putDefaultFactory = putFactory;
     }
+
+    @Inject(optional = true)
+    public void setDefaultPatchFactory(@Named(PATCH_FACTORY) PatchFactory patchFactory) {
+        this.patchDefaultFactory = patchFactory;
+    }
+
 
     @Inject(optional = true)
     public void setTestState(@Named(TEST_STATE) TestState testState) {
@@ -142,84 +152,154 @@ public class ApiTest {
         return putDefaultFactory;
     }
 
+    private PatchFactory getDefaultPatchFactory() {
+        if (patchDefaultFactory == null) {
+            setDefaultPatchFactory(ApiTesterModule.createPatchFactory());
+        }
+        return patchDefaultFactory;
+    }
+
     /**
      * Performs a post request using the default {@link PostFactory} and the {@link TestState} of
      * this
      * instance.
-     * 
+     *
      * @param uri
      * @param payload
      * @return
      * @throws IOException
      */
     public Context post(URI uri, Object payload) throws IOException {
-        return post(uri, payload, getDefaultPostFactory());
+        return post(uri, payload, getDefaultPostFactory(), null);
+    }
+
+    /**
+     * Performs a post request using the default {@link PostFactory} and the {@link TestState} of
+     * this instance.
+     * For adding headers just use the parameter.
+     *
+     *
+     * @param uri
+     * @param payload
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context post(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return post(uri, payload, getDefaultPostFactory(), additionalHeaders);
     }
 
     /**
      * Performs a post request using the given {@link PostFactory} and the {@link TestState} of
      * this instance. The {@link PostFactory} will be used for this call only. If you want to
-     * configure a new default one use {@link #setDefaultPostFactory(PostFactory)}
-     * 
+     * configure a new default one use {@link #setDefaultPostFactory(PostFactory)}.
+     * For adding headers you don't need to create a new Factory and just use the parameter.
+     *
      * @param uri
      * @param postFactory
      * @param payload
+     * @param additionalHeaders
      * @return
      * @throws IOException
      */
-    public Context post(URI uri, Object payload, PostFactory postFactory) throws IOException {
-        return Poster.post(uri, payload, getTestState(), postFactory);
+    public Context post(URI uri, Object payload, PostFactory postFactory, Map<String, String> additionalHeaders) throws IOException {
+        return Poster.post(uri, payload, getTestState(), postFactory, additionalHeaders);
     }
 
     /**
      * Performs a get request using the {@link GetFactory} and the {@link TestState} of this
      * instance.
-     * 
+     *
      * @param uri
      * @return
      * @throws IOException
      */
     public Context get(URI uri) throws IOException {
-        return get(uri, getDefaultGetFactory());
+        return get(uri, getDefaultGetFactory(), null);
+    }
+
+    /**
+     * Performs a get request using the {@link GetFactory} and the {@link TestState} of this
+     * instance.
+     * For adding headers just use the parameter.
+     *
+     * @param uri
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context get(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return get(uri, getDefaultGetFactory(), additionalHeaders);
     }
 
     /**
      * Performs a get request using the given {@link GetFactory} and the {@link TestState} of this
      * instance. The {@link GetFactory} will be used for this call only. If you want to
      * configure a new default one use {@link #setDefaultGetFactory(GetFactory)}.
-     * 
+     *
      * @param uri
+     * @param getFactory
+     * @param additionalHeaders
      * @return
      * @throws IOException
      */
-    public Context get(URI uri, GetFactory getFactory) throws IOException {
-        return Getter.get(uri, getTestState(), getFactory);
+    public Context get(URI uri, GetFactory getFactory, Map<String, String> additionalHeaders) throws IOException {
+        return Getter.get(uri, getTestState(), getFactory, additionalHeaders);
     }
 
     /**
      * Performs a delete request using the {@link DeleteFactory} and the {@link TestState} of this
      * instance.
-     * 
+     *
      * @param uri
      * @return
      * @throws IOException
      */
     public Context delete(URI uri) throws IOException {
-        return delete(uri, null, getDefaultDeleteFactory());
+        return delete(uri, null, getDefaultDeleteFactory(), null);
+    }
+
+    /**
+     * Performs a delete request using the {@link DeleteFactory} and the {@link TestState} of this
+     * instance.
+     * For adding headers just use the parameter.
+     *
+     * @param uri
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context delete(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return delete(uri, null, getDefaultDeleteFactory(), additionalHeaders);
     }
 
     /**
      * Performs a delete request using the given {@link DeleteFactory} and the {@link TestState} of
      * this instance. The payload is not forbidden in the HTTP specification and so its supported
      * here.
-     * 
+     *
      * @param uri
      * @param payload
      * @return
      * @throws IOException
      */
     public Context delete(URI uri, Object payload) throws IOException {
-        return delete(uri, payload, getDefaultDeleteFactory());
+        return delete(uri, payload, getDefaultDeleteFactory(), null);
+    }
+
+    /**
+     * Performs a delete request using the given {@link DeleteFactory} and the {@link TestState} of
+     * this instance. The payload is not forbidden in the HTTP specification and so its supported
+     * here. You also can add additional headers.
+     *
+     * @param uri
+     * @param payload
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context delete(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return delete(uri, payload, getDefaultDeleteFactory(), additionalHeaders);
     }
 
     /**
@@ -227,55 +307,156 @@ public class ApiTest {
      * this instance. The payload is not forbidden in the HTTP specification and so its supported
      * here. The {@link DeleteFactory} will be used for this call only. If you want to
      * configure a new default one use {@link #setDefaultDeleteFactory(DeleteFactory)}.
-     * 
+     *
      * @param uri
      * @param payload
      * @param deleteFactory
      * @return
      * @throws IOException
      */
-    public Context delete(URI uri, Object payload, DeleteFactory deleteFactory) throws IOException {
-        return Deleter.delete(uri, getTestState(), deleteFactory, payload);
+    public Context delete(URI uri, Object payload, DeleteFactory deleteFactory, Map<String, String> additionalHeaders) throws IOException {
+        return Deleter.delete(uri, getTestState(), deleteFactory, payload, additionalHeaders);
     }
 
     /**
      * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
      * instance.
-     * 
+     *
      * @param uri
      * @return
      * @throws IOException
      */
     public Context put(URI uri) throws IOException {
-        return put(uri, null, getDefaultPutFactory());
+        return put(uri, null, getDefaultPutFactory(), null);
+    }
+
+    /**
+     * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
+     * instance.
+     * For adding headers just use the parameter.
+     *
+     * @param uri
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context put(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return put(uri, null, getDefaultPutFactory(), additionalHeaders);
     }
 
     /**
      * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
      * instance with the given payload.
-     * 
+     *
      * @param uri
      * @param payload
      * @return
      * @throws IOException
      */
     public Context put(URI uri, Object payload) throws IOException {
-        return put(uri, payload, getDefaultPutFactory());
+        return put(uri, payload, getDefaultPutFactory(), null);
+    }
+
+    /**
+     * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
+     * instance with the given payload.
+     * For adding headers just use the parameter.
+     *
+     * @param uri
+     * @param payload
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context put(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return put(uri, payload, getDefaultPutFactory(), additionalHeaders);
     }
 
     /**
      * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
      * instance with the given payload. The {@link PutFactory} will be used for this call only. If
      * you want to configure a new default one use {@link #setDefaultDeleteFactory(PutFactory)}.
-     * 
+     * For adding headers you don't need to create a new Factory and just use the parameter.
+     *
      * @param uri
      * @param putFactory
+     * @param payload
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context put(URI uri, Object payload, PutFactory putFactory, Map<String, String> additionalHeaders) throws IOException {
+        return Putter.put(uri, getTestState(), putFactory, payload, additionalHeaders);
+    }
+
+    /**
+     * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
+     * instance.
+     *
+     * @param uri
+     * @return
+     * @throws IOException
+     */
+    public Context patch(URI uri) throws IOException {
+        return patch(uri, null, getDefaultPatchFactory(), null);
+    }
+
+    /**
+     * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
+     * instance.
+     * For adding headers just use the parameter.
+     *
+     * @param uri
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context patch(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return patch(uri, null, getDefaultPatchFactory(), additionalHeaders);
+    }
+
+    /**
+     * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
+     * instance with the given payload.
+     *
+     * @param uri
      * @param payload
      * @return
      * @throws IOException
      */
-    public Context put(URI uri, Object payload, PutFactory putFactory) throws IOException {
-        return Putter.put(uri, getTestState(), putFactory, payload);
+    public Context patch(URI uri, Object payload) throws IOException {
+        return patch(uri, payload, getDefaultPatchFactory(), null);
+    }
+
+    /**
+     * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
+     * instance with the given payload.
+     * For adding headers just use the parameter.
+     *
+     * @param uri
+     * @param payload
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context patch(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return patch(uri, payload, getDefaultPatchFactory(), additionalHeaders);
+    }
+
+    /**
+     * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
+     * instance with the given payload. The {@link PatchFactory} will be used for this call only. If
+     * you want to configure a new default one use {@link #setDefaultPatchFactory(PatchFactory)}.
+     *
+     * @param uri
+     * @param patchFactory
+     * @param payload
+     * @param additionalHeaders
+     * @return
+     * @throws IOException
+     */
+    public Context patch(URI uri, Object payload, PatchFactory patchFactory, Map<String, String> additionalHeaders) throws IOException {
+        return Patcher.patch(uri, getTestState(), patchFactory, payload, additionalHeaders);
     }
 
     /**

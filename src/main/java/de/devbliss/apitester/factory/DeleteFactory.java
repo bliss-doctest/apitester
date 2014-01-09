@@ -19,6 +19,12 @@ import java.net.URI;
 
 import org.apache.http.client.methods.HttpDelete;
 
+/**
+ * Creates DELETE requests. Override this if you need to add custom behaviour.
+ *
+ * @author bankmann
+ *
+ */
 public interface DeleteFactory {
 
     HttpDelete createDeleteRequest(URI uri) throws IOException;

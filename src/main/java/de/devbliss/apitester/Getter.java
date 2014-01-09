@@ -16,6 +16,7 @@ package de.devbliss.apitester;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -26,25 +27,37 @@ import de.devbliss.apitester.factory.GetFactory;
  * Contains static methods to perform GET requests. If you want to make more requests in a series
  * sharing the same {@link TestState} and using the same {@link GetFactory}, consider using
  * {@link ApiTest} which is wrapping that stuff for you.
- * 
+ *
  * @author hschuetz
- * 
+ *
  */
 public class Getter {
 
     public static Context get(URI uri) throws IOException {
-        return get(uri, null, null);
+        return get(uri, null, null, null);
     }
 
     public static Context get(URI uri, GetFactory getFactory) throws IOException {
-        return get(uri, null, getFactory);
+        return get(uri, null, getFactory, null);
     }
 
     public static Context get(URI uri, TestState testState) throws IOException {
-        return get(uri, testState, null);
+        return get(uri, testState, null, null);
     }
 
-    public static Context get(URI uri, TestState testState, GetFactory getFactory)
+    public static Context get(URI uri, TestState testState, GetFactory getFactory) throws IOException {
+    	return get(uri, testState, getFactory, null);
+    }
+
+    public static Context get(URI uri, TestState testState, Map<String, String> additionalHeaders) throws IOException {
+    	return get(uri, testState, null, additionalHeaders);
+    }
+
+    public static Context get(URI uri, Map<String, String> additionalHeaders) throws IOException {
+    	return get(uri, null, null, additionalHeaders);
+    }
+
+    public static Context get(URI uri, TestState testState, GetFactory getFactory, Map<String, String> additionalHeaders)
             throws IOException {
 
         if (getFactory == null) {
@@ -56,6 +69,12 @@ public class Getter {
         }
 
         HttpGet request = getFactory.createGetRequest(uri);
+
+        if(additionalHeaders!=null && additionalHeaders.size() > 0) {
+        	for (String headerName : additionalHeaders.keySet()) {
+        		request.addHeader(headerName, additionalHeaders.get(headerName));
+			}
+        }
 
         // IMPORTANT: we have to get the cookies from the testState before making the request
         // because this request could add some cookie to the testState (e.g: the response could have

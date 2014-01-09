@@ -16,6 +16,7 @@ package de.devbliss.apitester;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -26,37 +27,53 @@ import de.devbliss.apitester.factory.PostFactory;
  * Contains static methods to perform POST requests. If you want to make more requests in a series
  * sharing the same {@link TestState} and using the same {@link PostFactory}, consider using
  * {@link ApiTest} which is wrapping that stuff for you.
- * 
+ *
  * @author hschuetz
- * 
+ *
  */
 public class Poster {
 
     public static Context post(URI uri) throws IOException {
-        return post(uri, null, null, null);
+        return post(uri, null, null, null, null);
+    }
+
+    public static Context post(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return post(uri, null, null, null, additionalHeaders);
+    }
+
+    public static Context post(URI uri, TestState testState, Map<String, String> additionalHeaders) throws IOException {
+        return post(uri, null, testState, null, additionalHeaders);
+    }
+
+    public static Context post(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return post(uri, payload, null, null, additionalHeaders);
+    }
+
+    public static Context post(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders) throws IOException {
+        return post(uri, payload, testState, null, additionalHeaders);
     }
 
     public static Context post(URI uri, PostFactory postFactory) throws IOException {
-        return post(uri, null, null, postFactory);
+        return post(uri, null, null, postFactory, null);
     }
 
     public static Context post(URI uri, TestState testState) throws IOException {
-        return post(uri, null, testState, null);
+        return post(uri, null, testState, null, null);
     }
 
     public static Context post(URI uri, Object payload) throws IOException {
-        return post(uri, payload, null, null);
+        return post(uri, payload, null, null, null);
     }
 
     public static Context post(URI uri, Object payload, PostFactory postFactory) throws IOException {
-        return post(uri, payload, null, postFactory);
+        return post(uri, payload, null, postFactory, null);
     }
 
     public static Context post(URI uri, Object payload, TestState testState) throws IOException {
-        return post(uri, payload, testState, null);
+        return post(uri, payload, testState, null, null);
     }
 
-    public static Context post(URI uri, Object payload, TestState testState, PostFactory postFactory)
+    public static Context post(URI uri, Object payload, TestState testState, PostFactory postFactory, Map<String, String> additionalHeaders)
             throws IOException {
 
         if (postFactory == null) {
@@ -68,6 +85,12 @@ public class Poster {
         }
 
         HttpPost request = postFactory.createPostRequest(uri, payload);
+
+        if(additionalHeaders!=null && additionalHeaders.size() > 0) {
+        	for (String headerName : additionalHeaders.keySet()) {
+        		request.addHeader(headerName, additionalHeaders.get(headerName));
+			}
+        }
 
         // IMPORTANT: we have to get the cookies from the testState before making the request
         // because this request could add some cookie to the testState (e.g: the response could have
