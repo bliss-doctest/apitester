@@ -94,7 +94,7 @@ public class Deleter {
             request = deleteFactory.createDeleteRequest(uri);
         }
 
-        if(additionalHeaders!=null && additionalHeaders.size() > 0) {
+        if(additionalHeaders != null) {
         	for (String headerName : additionalHeaders.keySet()) {
         		request.addHeader(headerName, additionalHeaders.get(headerName));
 			}

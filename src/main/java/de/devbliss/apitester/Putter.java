@@ -92,7 +92,7 @@ public class Putter {
 
         HttpPut request = putFactory.createPutRequest(uri, payload);
 
-        if(additionalHeaders!=null && additionalHeaders.size() > 0) {
+        if(additionalHeaders != null) {
         	for (String headerName : additionalHeaders.keySet()) {
         		request.addHeader(headerName, additionalHeaders.get(headerName));
 			}
