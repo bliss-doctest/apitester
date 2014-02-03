@@ -10,7 +10,7 @@
     <groupId>de.devbliss.apitester</groupId>
     <name>Apitester</name>
     <artifactId>apitester</artifactId>
-    <version>0.6.5-SNAPSHOT</version>
+    <version>0.7.1-SNAPSHOT</version>
     <description>Apache HttpClient wrapper to make the most common tasks for testing a REST API more convenient</description>
     <url>http://devbliss.github.com/apitester</url>
     <organization>

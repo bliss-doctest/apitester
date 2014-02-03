@@ -3,6 +3,9 @@ CHANGES
 
 develop
 -------
+
+Version 0.7.0: 2014-01-09
+-------------------------
 - add additionalHeaders parameter to all http methods
 - add new http method PATCH
 
