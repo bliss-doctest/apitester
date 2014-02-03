@@ -44,7 +44,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.HttpDeleteWithBody;
-import de.devbliss.apitester.factory.PutFactory;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApiTestUnitTest {
@@ -58,8 +57,6 @@ public class ApiTestUnitTest {
     @Mock
     private DeleteFactory defaultDeleteFactory;
     @Mock
-    private PutFactory defaultPutFactory;
-    @Mock
     private HttpClient httpClient;
     @Mock
     private HttpResponse response;
@@ -71,8 +68,6 @@ public class ApiTestUnitTest {
     private RequestLine requestLine;
     @Mock
     private GetFactory myGetFactory;
-    @Mock
-    private PutFactory myPutFactory;
     @Mock
     private DeleteFactory myDeleteFactory;
     @Mock
@@ -134,26 +129,6 @@ public class ApiTestUnitTest {
         ApiTest apiTest = createApiTest();
         apiTest.get(uri, myGetFactory, null);
         verify(myGetFactory).createGetRequest(eq(uri));
-    }
-
-    @Test
-    public void testPutUsesDefaultPutFactory() throws Exception {
-        when(defaultPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
-
-        ApiTest apiTest = createApiTest();
-        Object payload = new Object();
-        apiTest.put(uri, payload);
-        verify(defaultPutFactory).createPutRequest(eq(uri), eq(payload));
-    }
-
-    @Test
-    public void testPutUsesSpecifiedPutFactory() throws Exception {
-        when(myPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
-
-        ApiTest apiTest = createApiTest();
-        Object payload = new Object();
-        apiTest.put(uri, payload, myPutFactory, null);
-        verify(myPutFactory).createPutRequest(eq(uri), eq(payload));
     }
 
     @Test
@@ -220,7 +195,6 @@ public class ApiTestUnitTest {
 
     @Test
     public void testPutStatusCode() throws Exception {
-        when(defaultPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
 
         ApiTest apiTest = createApiTest();
@@ -231,7 +205,6 @@ public class ApiTestUnitTest {
 
     @Test
     public void testPutWithPayloadStatusCode() throws Exception {
-        when(defaultPutFactory.createPutRequest(eq(uri), any(Object.class))).thenReturn(httpPut);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
 
         ApiTest apiTest = createApiTest();
@@ -270,7 +243,6 @@ public class ApiTestUnitTest {
         ApiTest apiTest = new ApiTest();
         apiTest.setDefaultDeleteFactory(defaultDeleteFactory);
         apiTest.setDefaultGetFactory(defaultGetFactory);
-        apiTest.setDefaultPutFactory(defaultPutFactory);
         apiTest.setTestState(testState);
         return apiTest;
     }

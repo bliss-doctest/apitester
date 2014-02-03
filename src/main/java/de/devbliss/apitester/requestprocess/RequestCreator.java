@@ -6,13 +6,19 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
 import com.google.gson.Gson;
 
+import de.devbliss.apitester.ApiRequest;
+import de.devbliss.apitester.ApiResponse;
+import de.devbliss.apitester.ApiTestUtil;
+import de.devbliss.apitester.Context;
 import de.devbliss.apitester.TestState;
 
 public class RequestCreator {
@@ -25,6 +31,21 @@ public class RequestCreator {
         HttpPost request = new HttpPost(uri);
         request = enhanceRequest(request, payload, testState, additionalHeaders);
         return request;
+    }
+
+    public static HttpPut createPut(URI uri, Object payload, TestState testState,
+            Map<String, String> additionalHeaders) throws IOException {
+        HttpPut request = new HttpPut(uri);
+        request = enhanceRequest(request, payload, testState, additionalHeaders);
+        return request;
+    }
+
+    public static <T extends HttpEntityEnclosingRequestBase> Context makeTheCall(T request, Object payload, TestState testState,
+            Map<String, String> additionalHeaders) throws IOException {
+        ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(request.getURI(), request, testState.getCookies());
+        HttpResponse response = testState.client.execute(request);
+        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
+        return new Context(apiResponse, apiRequest);
     }
 
     private static <T extends HttpEntityEnclosingRequestBase> T enhanceRequest(T request, Object payload, TestState testState,

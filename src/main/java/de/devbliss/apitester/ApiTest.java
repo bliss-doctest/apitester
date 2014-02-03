@@ -24,7 +24,6 @@ import com.google.inject.name.Named;
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.PatchFactory;
-import de.devbliss.apitester.factory.PutFactory;
 import de.devbliss.apitester.requestprocess.Poster;
 
 /**
@@ -76,7 +75,6 @@ public class ApiTest {
 
     private GetFactory getDefaultFactory;
     private DeleteFactory deleteDefaultFactory;
-    private PutFactory putDefaultFactory;
     private PatchFactory patchDefaultFactory;
     private TestState testState;
 
@@ -95,15 +93,9 @@ public class ApiTest {
     }
 
     @Inject(optional = true)
-    public void setDefaultPutFactory(@Named(PUT_FACTORY) PutFactory putFactory) {
-        this.putDefaultFactory = putFactory;
-    }
-
-    @Inject(optional = true)
     public void setDefaultPatchFactory(@Named(PATCH_FACTORY) PatchFactory patchFactory) {
         this.patchDefaultFactory = patchFactory;
     }
-
 
     @Inject(optional = true)
     public void setTestState(@Named(TEST_STATE) TestState testState) {
@@ -130,13 +122,6 @@ public class ApiTest {
             setDefaultGetFactory(ApiTesterModule.createGetFactory());
         }
         return getDefaultFactory;
-    }
-
-    private PutFactory getDefaultPutFactory() {
-        if (putDefaultFactory == null) {
-            setDefaultPutFactory(ApiTesterModule.createPutFactory());
-        }
-        return putDefaultFactory;
     }
 
     private PatchFactory getDefaultPatchFactory() {
@@ -298,7 +283,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context put(URI uri) throws IOException {
-        return put(uri, null, getDefaultPutFactory(), null);
+        return put(uri, null, null);
     }
 
     /**
@@ -312,7 +297,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context put(URI uri, Map<String, String> additionalHeaders) throws IOException {
-        return put(uri, null, getDefaultPutFactory(), additionalHeaders);
+        return put(uri, null, additionalHeaders);
     }
 
     /**
@@ -325,23 +310,10 @@ public class ApiTest {
      * @throws IOException
      */
     public Context put(URI uri, Object payload) throws IOException {
-        return put(uri, payload, getDefaultPutFactory(), null);
+        return put(uri, payload, null);
     }
 
-    /**
-     * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
-     * instance with the given payload.
-     * For adding headers just use the parameter.
-     *
-     * @param uri
-     * @param payload
-     * @param additionalHeaders
-     * @return
-     * @throws IOException
-     */
-    public Context put(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return put(uri, payload, getDefaultPutFactory(), additionalHeaders);
-    }
+
 
     /**
      * Performs a put request using the {@link PutFactory} and the {@link TestState} of this
@@ -350,14 +322,13 @@ public class ApiTest {
      * For adding headers you don't need to create a new Factory and just use the parameter.
      *
      * @param uri
-     * @param putFactory
      * @param payload
      * @param additionalHeaders
      * @return
      * @throws IOException
      */
-    public Context put(URI uri, Object payload, PutFactory putFactory, Map<String, String> additionalHeaders) throws IOException {
-        return Putter.put(uri, getTestState(), putFactory, payload, additionalHeaders);
+    public Context put(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return Putter.put(uri, getTestState(), payload, additionalHeaders);
     }
 
     /**
