@@ -18,7 +18,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -39,8 +37,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.factory.PostFactory;
-import de.devbliss.apitester.factory.impl.DefaultPostFactory;
 
 /**
  * Tests the methods of {@link Poster} and its delegates against an embedded local instance of
@@ -60,6 +56,10 @@ public class PosterIntegrationTest {
     private static final String COOKIE_NAME_1 = "cookie_name_1";
     private static final String COOKIE_VALUE_2 = "cookie_value_2";
     private static final String COOKIE_NAME_2 = "cookie_name_2";
+
+    private static final String HEADER_NAME_CONTENTTYPE = "content-type";
+    private static final String HEADER_VALUE_CONTENTTYPE_JSON = "application/json; charset=UTF-8";
+    private static final String HEADER_VALUE_CONTENTTYPE_TEXT = "text/plain;charset=UTF-8";
 
     @Mock
     private CookieStore cookieStore;
@@ -104,7 +104,7 @@ public class PosterIntegrationTest {
     }
 
     @Test
-    public void testPostOkWithPayload() throws Exception {
+    public void testPostOkWithJsonPayload() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         Context wrapper = Poster.post(uri, payload);
@@ -115,16 +115,19 @@ public class PosterIntegrationTest {
         assertEquals(payload, result);
         assertEquals(uri, request.uri);
         assertEquals("POST", request.httpMethod);
+        assertEquals(HEADER_VALUE_CONTENTTYPE_JSON, response.getHeader(HEADER_NAME_CONTENTTYPE));
     }
 
     @Test
-    public void testPostOkWithOwnPostFactory() throws Exception {
+    public void testPostOkWithStringPayload() throws Exception {
+        final String payload = "just some string";
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, new DefaultPostFactory());
+        Context wrapper = Poster.post(uri, payload);
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
+        assertEquals(HEADER_VALUE_CONTENTTYPE_TEXT, response.getHeader(HEADER_NAME_CONTENTTYPE));
+        assertEquals(payload, response.payload);
         assertEquals("POST", request.httpMethod);
     }
 
@@ -136,32 +139,6 @@ public class PosterIntegrationTest {
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
-
-    @Test
-    public void testPostOkWithOwnPostFactoryAndTestState() throws Exception {
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, new DefaultPostFactory(), testState);
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
-        ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
-
-    @Test
-    public void testPostOkWithPayloadAndOwnPostFactory() throws Exception {
-        DummyDto payload = createPayload();
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, payload, new DefaultPostFactory());
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
-        ApiTestUtil.assertOk(response);
-        DummyDto result = response.payloadJsonAs(DummyDto.class);
-        assertEquals(payload, result);
         assertEquals(uri, request.uri);
         assertEquals("POST", request.httpMethod);
     }
@@ -181,35 +158,6 @@ public class PosterIntegrationTest {
         assertEquals("POST", request.httpMethod);
     }
 
-    @Test
-    public void testPostOkWithPayloadAndOwnPostFactoryAndTestState() throws Exception {
-        DummyDto payload = createPayload();
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory(), null);
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
-        ApiTestUtil.assertOk(response);
-        DummyDto result = response.payloadJsonAs(DummyDto.class);
-        assertEquals(payload, result);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
-
-    @Test
-    public void testPostWithCustomPostFactory() throws Exception {
-        DummyDto payload = createPayload();
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState, getCustomFactoryWithHeaders(), null);
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
-        ApiTestUtil.assertOk(response);
-        assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
-        assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
 
     @Test
     public void testPostWithHeaders() throws Exception {
@@ -231,7 +179,7 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context wrapper = Poster.post(uri, payload, testState, getCustomFactoryWithHeaders(), null);
+        Context wrapper = Poster.post(uri, payload, testState, createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -245,18 +193,6 @@ public class PosterIntegrationTest {
         assertNull(request.getCookie(HEADER_NAME1));
         assertNull(request.getHeader(COOKIE_NAME_1));
 
-    }
-
-    private PostFactory getCustomFactoryWithHeaders() {
-        return new PostFactory() {
-
-            public HttpPost createPostRequest(URI uri, Object payload) throws IOException {
-                HttpPost request = new HttpPost(uri);
-                request.setHeader(HEADER_NAME1, HEADER_VALUE1);
-                request.setHeader(HEADER_NAME2, HEADER_VALUE2);
-                return request;
-            }
-        };
     }
 
     private Map<String,String> createCustomHeaders() {

@@ -26,12 +26,10 @@ import com.google.inject.Provides;
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.PatchFactory;
-import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 import de.devbliss.apitester.factory.impl.DefaultDeleteFactory;
 import de.devbliss.apitester.factory.impl.DefaultGetFactory;
 import de.devbliss.apitester.factory.impl.DefaultPatchFactory;
-import de.devbliss.apitester.factory.impl.DefaultPostFactory;
 import de.devbliss.apitester.factory.impl.DefaultPutFactory;
 
 /**
@@ -48,7 +46,6 @@ public class ApiTesterModule extends AbstractModule {
     protected void configure() {
         bind(GetFactory.class).to(DefaultGetFactory.class);
         bind(DeleteFactory.class).to(DefaultDeleteFactory.class);
-        bind(PostFactory.class).to(DefaultPostFactory.class);
         bind(PutFactory.class).to(DefaultPutFactory.class);
         bind(PatchFactory.class).to(DefaultPatchFactory.class);
         bind(CookieStore.class).to(BasicCookieStore.class);
@@ -107,16 +104,6 @@ public class ApiTesterModule extends AbstractModule {
      */
     public static PatchFactory createPatchFactory() {
         return injector.getInstance(PatchFactory.class);
-    }
-
-    /**
-     * Creates an instance of the default implementation of {@link PostFactory} as it is bound in
-     * this module.
-     *
-     * @return
-     */
-    public static PostFactory createPostFactory() {
-        return injector.getInstance(PostFactory.class);
     }
 
     /**

@@ -90,7 +90,7 @@ public class DummyRequestHandler extends AbstractHandler {
         try {
             int desiredResponseCode = parseDesiredResponseCode(target);
             response.setStatus(desiredResponseCode);
-            response.setContentType(CONTENT_TYPE);
+            response.setContentType(request.getContentType());
 
             if (desiredResponseCode == HttpServletResponse.SC_OK) {
                 String requestBody = IOUtils.toString(request.getInputStream());

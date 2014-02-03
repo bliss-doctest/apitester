@@ -44,7 +44,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.HttpDeleteWithBody;
-import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,8 +55,6 @@ public class ApiTestUnitTest {
 
     @Mock
     private GetFactory defaultGetFactory;
-    @Mock
-    private PostFactory defaultPostFactory;
     @Mock
     private DeleteFactory defaultDeleteFactory;
     @Mock
@@ -74,8 +71,6 @@ public class ApiTestUnitTest {
     private RequestLine requestLine;
     @Mock
     private GetFactory myGetFactory;
-    @Mock
-    private PostFactory myPostFactory;
     @Mock
     private PutFactory myPutFactory;
     @Mock
@@ -139,26 +134,6 @@ public class ApiTestUnitTest {
         ApiTest apiTest = createApiTest();
         apiTest.get(uri, myGetFactory, null);
         verify(myGetFactory).createGetRequest(eq(uri));
-    }
-
-    @Test
-    public void testPostUsesDefaultPostFactory() throws Exception {
-        when(defaultPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
-
-        ApiTest apiTest = createApiTest();
-        Object payload = new Object();
-        apiTest.post(uri, payload);
-        verify(defaultPostFactory).createPostRequest(eq(uri), eq(payload));
-    }
-
-    @Test
-    public void testPostUsesSpecifiedPostFactory() throws Exception {
-        when(myPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
-
-        ApiTest apiTest = createApiTest();
-        Object payload = new Object();
-        apiTest.post(uri, payload, myPostFactory, null);
-        verify(myPostFactory).createPostRequest(eq(uri), eq(payload));
     }
 
     @Test
@@ -234,7 +209,6 @@ public class ApiTestUnitTest {
 
     @Test
     public void testPostStatusCode() throws Exception {
-        when(defaultPostFactory.createPostRequest(eq(uri), any(Object.class))).thenReturn(httpPost);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
 
         ApiTest apiTest = createApiTest();
@@ -297,7 +271,6 @@ public class ApiTestUnitTest {
         apiTest.setDefaultDeleteFactory(defaultDeleteFactory);
         apiTest.setDefaultGetFactory(defaultGetFactory);
         apiTest.setDefaultPutFactory(defaultPutFactory);
-        apiTest.setDefaultPostFactory(defaultPostFactory);
         apiTest.setTestState(testState);
         return apiTest;
     }

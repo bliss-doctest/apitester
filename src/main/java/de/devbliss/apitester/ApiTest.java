@@ -24,7 +24,6 @@ import com.google.inject.name.Named;
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.PatchFactory;
-import de.devbliss.apitester.factory.PostFactory;
 import de.devbliss.apitester.factory.PutFactory;
 
 /**
@@ -75,7 +74,6 @@ public class ApiTest {
     public static final String TEST_STATE = "testState";
 
     private GetFactory getDefaultFactory;
-    private PostFactory postDefaultFactory;
     private DeleteFactory deleteDefaultFactory;
     private PutFactory putDefaultFactory;
     private PatchFactory patchDefaultFactory;
@@ -93,11 +91,6 @@ public class ApiTest {
     @Inject(optional = true)
     public void setDefaultGetFactory(@Named(GET_FACTORY) GetFactory getFactory) {
         this.getDefaultFactory = getFactory;
-    }
-
-    @Inject(optional = true)
-    public void setDefaultPostFactory(@Named(POST_FACTORY) PostFactory postFactory) {
-        this.postDefaultFactory = postFactory;
     }
 
     @Inject(optional = true)
@@ -138,13 +131,6 @@ public class ApiTest {
         return getDefaultFactory;
     }
 
-    private PostFactory getDefaultPostFactory() {
-        if (postDefaultFactory == null) {
-            setDefaultPostFactory(ApiTesterModule.createPostFactory());
-        }
-        return postDefaultFactory;
-    }
-
     private PutFactory getDefaultPutFactory() {
         if (putDefaultFactory == null) {
             setDefaultPutFactory(ApiTesterModule.createPutFactory());
@@ -170,7 +156,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context post(URI uri, Object payload) throws IOException {
-        return post(uri, payload, getDefaultPostFactory(), null);
+        return post(uri, payload, null);
     }
 
     /**
@@ -186,25 +172,9 @@ public class ApiTest {
      * @throws IOException
      */
     public Context post(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return post(uri, payload, getDefaultPostFactory(), additionalHeaders);
+        return post(uri, payload, additionalHeaders);
     }
 
-    /**
-     * Performs a post request using the given {@link PostFactory} and the {@link TestState} of
-     * this instance. The {@link PostFactory} will be used for this call only. If you want to
-     * configure a new default one use {@link #setDefaultPostFactory(PostFactory)}.
-     * For adding headers you don't need to create a new Factory and just use the parameter.
-     *
-     * @param uri
-     * @param postFactory
-     * @param payload
-     * @param additionalHeaders
-     * @return
-     * @throws IOException
-     */
-    public Context post(URI uri, Object payload, PostFactory postFactory, Map<String, String> additionalHeaders) throws IOException {
-        return Poster.post(uri, payload, getTestState(), postFactory, additionalHeaders);
-    }
 
     /**
      * Performs a get request using the {@link GetFactory} and the {@link TestState} of this
