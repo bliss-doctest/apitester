@@ -18,14 +18,12 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
 import com.google.gson.Gson;
 
 import de.devbliss.apitester.factory.PatchFactory;
-import de.devbliss.apitester.factory.PutFactory;
 
 /**
  * Default implementation that converts the payload to JSON (if there is one) and sends it as

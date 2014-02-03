@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPatch;
 
-import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.PatchFactory;
 
 /**

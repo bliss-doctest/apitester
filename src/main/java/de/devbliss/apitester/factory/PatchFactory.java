@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPut;
 
 /**
  * Creates PATCH requests. Override this if you need to add custom behaviour.
