@@ -25,6 +25,7 @@ import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.PatchFactory;
 import de.devbliss.apitester.requestprocess.Poster;
+import de.devbliss.apitester.requestprocess.Putter;
 
 /**
  * Entrypoint class for performing api calls.

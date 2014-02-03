@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.requestprocess;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,8 +21,14 @@ import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
 
+import de.devbliss.apitester.ApiRequest;
+import de.devbliss.apitester.ApiResponse;
+import de.devbliss.apitester.ApiTest;
+import de.devbliss.apitester.ApiTestUtil;
+import de.devbliss.apitester.ApiTesterModule;
+import de.devbliss.apitester.Context;
+import de.devbliss.apitester.TestState;
 import de.devbliss.apitester.factory.DeleteFactory;
-import de.devbliss.apitester.requestprocess.RequestCreator;
 
 /**
  * Contains static methods to perform PUT requests. If you want to make more requests in a series
