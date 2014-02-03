@@ -25,6 +25,7 @@ import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.PatchFactory;
 import de.devbliss.apitester.factory.PutFactory;
+import de.devbliss.apitester.requestprocess.Poster;
 
 /**
  * Entrypoint class for performing api calls.
@@ -172,7 +173,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context post(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return post(uri, payload, additionalHeaders);
+        return Poster.post(uri, payload, getTestState(), additionalHeaders);
     }
 
 
