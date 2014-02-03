@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpRequest;
@@ -35,7 +34,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Test;

@@ -14,25 +14,27 @@
 
 package de.devbliss.apitester.dummyserver;
 
-import de.devbliss.apitester.ApiResponse;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.servlet.http.HttpServletResponse;
+
+import de.devbliss.apitester.ApiResponse;
+
 /**
  * Handles sending assertions that were thrown on the server back to the client properly
  */
 public class HandlerUtils {
+    @SuppressWarnings("unchecked")
     public static ApiResponse handleErrors(ApiResponse response) {
         if (response.httpStatus == 500) {
             if (response.reasonPhrase.contains(":")) {
                 String[] error = response.reasonPhrase.split(":", 2);
                 Throwable exception;
                 try {
-                    Class<? extends Throwable> exceptionClass = (Class) Class.forName(error[0]);
+                    Class<? extends Throwable> exceptionClass = (Class<? extends Throwable>) Class.forName(error[0]);
                     Constructor<? extends Throwable> constructor = exceptionClass.getDeclaredConstructor(String.class);
                     constructor.setAccessible(true);
                     exception = constructor.newInstance(URLDecoder.decode(error[1], "UTF-8"));
