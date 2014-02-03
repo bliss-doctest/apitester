@@ -18,7 +18,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -39,8 +37,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.factory.PatchFactory;
-import de.devbliss.apitester.factory.impl.DefaultPatchFactory;
 
 /**
  * Tests the methods of {@link Patcher} and its delegates against an embedded local instance of
@@ -121,7 +117,7 @@ public class PatcherIntegrationTest {
     @Test
     public void testPatchOkWithOwnPatchFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Patcher.patch(uri, new DefaultPatchFactory());
+        Context wrapper = Patcher.patch(uri);
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
@@ -145,7 +141,7 @@ public class PatcherIntegrationTest {
     public void testPatchOkWithOwnPatchFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Patcher.patch(uri, new DefaultPatchFactory(), testState);
+        Context wrapper = Patcher.patch(uri, testState);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -157,7 +153,7 @@ public class PatcherIntegrationTest {
     public void testPatchOkWithPayloadAndOwnPatchFactory() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Patcher.patch(uri, payload, new DefaultPatchFactory());
+        Context wrapper = Patcher.patch(uri, payload);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -187,7 +183,7 @@ public class PatcherIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Patcher.patch(uri, testState, new DefaultPatchFactory(), payload, null);
+        Context wrapper = Patcher.patch(uri, payload, testState, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -202,7 +198,7 @@ public class PatcherIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Patcher.patch(uri, testState, getCustomFactoryWithHeaders(), payload, null);
+        Context wrapper = Patcher.patch(uri, payload, testState, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -232,7 +228,7 @@ public class PatcherIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context wrapper = Patcher.patch(uri, testState, getCustomFactoryWithHeaders(), payload, null);
+        Context wrapper = Patcher.patch(uri, payload, testState, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -248,17 +244,6 @@ public class PatcherIntegrationTest {
 
     }
 
-    private PatchFactory getCustomFactoryWithHeaders() {
-        return new PatchFactory() {
-
-            public HttpPatch createPatchRequest(URI uri, Object payload) throws IOException {
-                HttpPatch request = new HttpPatch(uri);
-                request.setHeader(HEADER_NAME1, HEADER_VALUE1);
-                request.setHeader(HEADER_NAME2, HEADER_VALUE2);
-                return request;
-            }
-        };
-    }
 
     private Map<String,String> createCustomHeaders() {
     	Map<String, String> returnValue = new HashMap<String, String>();

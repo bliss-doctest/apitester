@@ -23,7 +23,6 @@ import com.google.inject.name.Named;
 
 import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.GetFactory;
-import de.devbliss.apitester.factory.PatchFactory;
 import de.devbliss.apitester.requestprocess.Poster;
 import de.devbliss.apitester.requestprocess.Putter;
 
@@ -76,7 +75,6 @@ public class ApiTest {
 
     private GetFactory getDefaultFactory;
     private DeleteFactory deleteDefaultFactory;
-    private PatchFactory patchDefaultFactory;
     private TestState testState;
 
     public enum HTTP_REQUEST {
@@ -91,11 +89,6 @@ public class ApiTest {
     @Inject(optional = true)
     public void setDefaultGetFactory(@Named(GET_FACTORY) GetFactory getFactory) {
         this.getDefaultFactory = getFactory;
-    }
-
-    @Inject(optional = true)
-    public void setDefaultPatchFactory(@Named(PATCH_FACTORY) PatchFactory patchFactory) {
-        this.patchDefaultFactory = patchFactory;
     }
 
     @Inject(optional = true)
@@ -123,13 +116,6 @@ public class ApiTest {
             setDefaultGetFactory(ApiTesterModule.createGetFactory());
         }
         return getDefaultFactory;
-    }
-
-    private PatchFactory getDefaultPatchFactory() {
-        if (patchDefaultFactory == null) {
-            setDefaultPatchFactory(ApiTesterModule.createPatchFactory());
-        }
-        return patchDefaultFactory;
     }
 
     /**
@@ -341,7 +327,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context patch(URI uri) throws IOException {
-        return patch(uri, null, getDefaultPatchFactory(), null);
+        return patch(uri, null, null);
     }
 
     /**
@@ -355,7 +341,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context patch(URI uri, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, null, getDefaultPatchFactory(), additionalHeaders);
+        return patch(uri, null, additionalHeaders);
     }
 
     /**
@@ -368,13 +354,14 @@ public class ApiTest {
      * @throws IOException
      */
     public Context patch(URI uri, Object payload) throws IOException {
-        return patch(uri, payload, getDefaultPatchFactory(), null);
+        return patch(uri, payload, null);
     }
+
 
     /**
      * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
-     * instance with the given payload.
-     * For adding headers just use the parameter.
+     * instance with the given payload. The {@link PatchFactory} will be used for this call only. If
+     * you want to configure a new default one use {@link #setDefaultPatchFactory(PatchFactory)}.
      *
      * @param uri
      * @param payload
@@ -383,23 +370,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context patch(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, payload, getDefaultPatchFactory(), additionalHeaders);
-    }
-
-    /**
-     * Performs a patch request using the {@link PatchFactory} and the {@link TestState} of this
-     * instance with the given payload. The {@link PatchFactory} will be used for this call only. If
-     * you want to configure a new default one use {@link #setDefaultPatchFactory(PatchFactory)}.
-     *
-     * @param uri
-     * @param patchFactory
-     * @param payload
-     * @param additionalHeaders
-     * @return
-     * @throws IOException
-     */
-    public Context patch(URI uri, Object payload, PatchFactory patchFactory, Map<String, String> additionalHeaders) throws IOException {
-        return Patcher.patch(uri, getTestState(), patchFactory, payload, additionalHeaders);
+        return Patcher.patch(uri, payload, getTestState(), additionalHeaders);
     }
 
     /**

@@ -18,10 +18,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPatch;
 
-import de.devbliss.apitester.factory.PatchFactory;
+import de.devbliss.apitester.requestprocess.RequestCreator;
 
 /**
  * Contains static methods to perform PATCH requests. If you want to make more requests in a series
@@ -33,78 +32,42 @@ import de.devbliss.apitester.factory.PatchFactory;
  */
 public class Patcher {
 
+    public static Context patch(URI uri) throws IOException {
+        return patch(uri, null, null, null);
+    }
+
 	public static Context patch(URI uri, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, null, null, null, additionalHeaders);
+        return patch(uri, null, null, additionalHeaders);
     }
 
     public static Context patch(URI uri, TestState testState, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, testState, null, null, additionalHeaders);
+        return patch(uri, null, testState, additionalHeaders);
     }
 
     public static Context patch(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, null, null, payload, additionalHeaders);
-    }
-
-    public static Context patch(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, testState, null, payload, additionalHeaders);
-    }
-
-    public static Context patch(URI uri) throws IOException {
-        return patch(uri, null, null, null, null);
-    }
-
-    public static Context patch(URI uri, PatchFactory patchFactory) throws IOException {
-        return patch(uri, null, patchFactory, null, null);
+        return patch(uri, payload, null, additionalHeaders);
     }
 
     public static Context patch(URI uri, TestState testState) throws IOException {
-        return patch(uri, testState, null, null, null);
-    }
-
-    public static Context patch(URI uri, TestState testState, PatchFactory patchFactory)
-            throws IOException {
-        return patch(uri, testState, patchFactory, null, null);
+        return patch(uri, null, testState, null);
     }
 
     public static Context patch(URI uri, Object payload) throws IOException {
-        return patch(uri, null, null, payload, null);
-    }
-
-    public static Context patch(URI uri, Object payload, PatchFactory patchFactory) throws IOException {
-        return patch(uri, null, patchFactory, payload, null);
+        return patch(uri, payload, null, null);
     }
 
     public static Context patch(URI uri, Object payload, TestState testState) throws IOException {
-        return patch(uri, testState, null, payload, null);
+        return patch(uri, payload, testState, null);
     }
 
-    public static Context patch(URI uri, TestState testState, PatchFactory patchFactory, Object payload, Map<String, String> additionalHeaders)
+    public static Context patch(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders)
             throws IOException {
-
-        if (patchFactory == null) {
-        	patchFactory = ApiTesterModule.createPatchFactory();
-        }
 
         if (testState == null) {
             testState = ApiTesterModule.createTestState();
         }
 
-        HttpPatch request = patchFactory.createPatchRequest(uri, payload);
-
-        if(additionalHeaders != null) {
-        	for (String headerName : additionalHeaders.keySet()) {
-        		request.addHeader(headerName, additionalHeaders.get(headerName));
-			}
-        }
-
-        // IMPORTANT: we have to get the cookies from the testState before making the request
-        // because this request could add some cookie to the testState (e.g: the response could have
-        // a Set-Cookie header)
-        ApiRequest apiRequest =
-                ApiTestUtil.convertToApiRequest(uri, request, testState.getCookies());
-
-        HttpResponse response = testState.client.execute(request);
-        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
-        return new Context(apiResponse, apiRequest);
+        HttpPatch request = RequestCreator.createPatch(uri, payload, testState, additionalHeaders);
+        return RequestCreator.makeTheCall(request, payload, testState, additionalHeaders);
     }
 }

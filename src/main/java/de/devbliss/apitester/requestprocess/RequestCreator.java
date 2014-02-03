@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
@@ -40,8 +41,19 @@ public class RequestCreator {
         return request;
     }
 
+    public static HttpPatch createPatch(URI uri, Object payload, TestState testState,
+            Map<String, String> additionalHeaders) throws IOException {
+        HttpPatch request = new HttpPatch(uri);
+        request = enhanceRequest(request, payload, testState, additionalHeaders);
+        return request;
+    }
+
     public static <T extends HttpEntityEnclosingRequestBase> Context makeTheCall(T request, Object payload, TestState testState,
             Map<String, String> additionalHeaders) throws IOException {
+
+        // IMPORTANT: we have to get the cookies from the testState before making the request
+        // because this request could add some cookie to the testState (e.g: the response could have
+        // a Set-Cookie header)
         ApiRequest apiRequest = ApiTestUtil.convertToApiRequest(request.getURI(), request, testState.getCookies());
         HttpResponse response = testState.client.execute(request);
         ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);

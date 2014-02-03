@@ -18,13 +18,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
 
-import de.devbliss.apitester.ApiRequest;
-import de.devbliss.apitester.ApiResponse;
 import de.devbliss.apitester.ApiTest;
-import de.devbliss.apitester.ApiTestUtil;
 import de.devbliss.apitester.ApiTesterModule;
 import de.devbliss.apitester.Context;
 import de.devbliss.apitester.TestState;
@@ -76,21 +72,6 @@ public class Putter {
         }
 
         HttpPut request = RequestCreator.createPut(uri, payload, testState, additionalHeaders);
-
-        if (additionalHeaders != null) {
-            for (String headerName : additionalHeaders.keySet()) {
-                request.addHeader(headerName, additionalHeaders.get(headerName));
-            }
-        }
-
-        // IMPORTANT: we have to get the cookies from the testState before making the request
-        // because this request could add some cookie to the testState (e.g: the response could have
-        // a Set-Cookie header)
-        ApiRequest apiRequest =
-                ApiTestUtil.convertToApiRequest(uri, request, testState.getCookies());
-
-        HttpResponse response = testState.client.execute(request);
-        ApiResponse apiResponse = ApiTestUtil.convertToApiResponse(response);
-        return new Context(apiResponse, apiRequest);
+        return RequestCreator.makeTheCall(request, payload, testState, additionalHeaders);
     }
 }
