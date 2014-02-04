@@ -22,7 +22,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import de.devbliss.apitester.factory.DeleteFactory;
-import de.devbliss.apitester.factory.GetFactory;
+import de.devbliss.apitester.requestprocess.Getter;
+import de.devbliss.apitester.requestprocess.Patcher;
 import de.devbliss.apitester.requestprocess.Poster;
 import de.devbliss.apitester.requestprocess.Putter;
 
@@ -73,7 +74,6 @@ public class ApiTest {
     public static final String PATCH_FACTORY = "patchFactory";
     public static final String TEST_STATE = "testState";
 
-    private GetFactory getDefaultFactory;
     private DeleteFactory deleteDefaultFactory;
     private TestState testState;
 
@@ -84,11 +84,6 @@ public class ApiTest {
     @Inject(optional = true)
     public void setDefaultDeleteFactory(@Named(DELETE_FACTORY) DeleteFactory deleteFactory) {
         this.deleteDefaultFactory = deleteFactory;
-    }
-
-    @Inject(optional = true)
-    public void setDefaultGetFactory(@Named(GET_FACTORY) GetFactory getFactory) {
-        this.getDefaultFactory = getFactory;
     }
 
     @Inject(optional = true)
@@ -109,13 +104,6 @@ public class ApiTest {
         }
 
         return deleteDefaultFactory;
-    }
-
-    private GetFactory getDefaultGetFactory() {
-        if (getDefaultFactory == null) {
-            setDefaultGetFactory(ApiTesterModule.createGetFactory());
-        }
-        return getDefaultFactory;
     }
 
     /**
@@ -158,21 +146,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context get(URI uri) throws IOException {
-        return get(uri, getDefaultGetFactory(), null);
-    }
-
-    /**
-     * Performs a get request using the {@link GetFactory} and the {@link TestState} of this
-     * instance.
-     * For adding headers just use the parameter.
-     *
-     * @param uri
-     * @param additionalHeaders
-     * @return
-     * @throws IOException
-     */
-    public Context get(URI uri, Map<String, String> additionalHeaders) throws IOException {
-        return get(uri, getDefaultGetFactory(), additionalHeaders);
+        return get(uri, null);
     }
 
     /**
@@ -186,8 +160,8 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public Context get(URI uri, GetFactory getFactory, Map<String, String> additionalHeaders) throws IOException {
-        return Getter.get(uri, getTestState(), getFactory, additionalHeaders);
+    public Context get(URI uri, Map<String, String> additionalHeaders) throws IOException {
+        return Getter.get(uri, getTestState(), additionalHeaders);
     }
 
     /**

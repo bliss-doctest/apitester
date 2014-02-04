@@ -24,9 +24,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 
 import de.devbliss.apitester.factory.DeleteFactory;
-import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.impl.DefaultDeleteFactory;
-import de.devbliss.apitester.factory.impl.DefaultGetFactory;
 
 /**
  * Binds all dependencies of ApiTester.
@@ -40,7 +38,6 @@ public class ApiTesterModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(GetFactory.class).to(DefaultGetFactory.class);
         bind(DeleteFactory.class).to(DefaultDeleteFactory.class);
         bind(CookieStore.class).to(BasicCookieStore.class);
     }
@@ -58,16 +55,6 @@ public class ApiTesterModule extends AbstractModule {
         DefaultHttpClient client = new DefaultHttpClient();
         client.setCookieStore(cookieStore);
         return new TestState(client, cookieStore);
-    }
-
-    /**
-     * Creates an instance of the default implementation of {@link GetFactory} as it is bound in
-     * this module.
-     *
-     * @return
-     */
-    public static GetFactory createGetFactory() {
-        return injector.getInstance(GetFactory.class);
     }
 
     /**

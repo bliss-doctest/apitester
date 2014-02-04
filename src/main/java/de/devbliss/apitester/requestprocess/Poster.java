@@ -71,6 +71,6 @@ public class Poster {
         }
 
         HttpPost request = RequestCreator.createPost(uri, payload, testState, additionalHeaders);
-        return RequestCreator.makeTheCall(request, payload, testState, additionalHeaders);
+        return RequestCreator.makeTheCall(request, testState);
     }
 }

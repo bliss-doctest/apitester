@@ -37,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
+import de.devbliss.apitester.requestprocess.Patcher;
 
 /**
  * Tests the methods of {@link Patcher} and its delegates against an embedded local instance of

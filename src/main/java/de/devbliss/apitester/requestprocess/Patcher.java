@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.requestprocess;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,7 +20,10 @@ import java.util.Map;
 
 import org.apache.http.client.methods.HttpPatch;
 
-import de.devbliss.apitester.requestprocess.RequestCreator;
+import de.devbliss.apitester.ApiTest;
+import de.devbliss.apitester.ApiTesterModule;
+import de.devbliss.apitester.Context;
+import de.devbliss.apitester.TestState;
 
 /**
  * Contains static methods to perform PATCH requests. If you want to make more requests in a series
@@ -68,6 +71,6 @@ public class Patcher {
         }
 
         HttpPatch request = RequestCreator.createPatch(uri, payload, testState, additionalHeaders);
-        return RequestCreator.makeTheCall(request, payload, testState, additionalHeaders);
+        return RequestCreator.makeTheCall(request, testState);
     }
 }

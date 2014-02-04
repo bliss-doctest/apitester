@@ -72,6 +72,6 @@ public class Putter {
         }
 
         HttpPut request = RequestCreator.createPut(uri, payload, testState, additionalHeaders);
-        return RequestCreator.makeTheCall(request, payload, testState, additionalHeaders);
+        return RequestCreator.makeTheCall(request, testState);
     }
 }

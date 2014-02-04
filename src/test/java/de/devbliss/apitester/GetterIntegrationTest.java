@@ -19,7 +19,6 @@ import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -39,8 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.factory.GetFactory;
-import de.devbliss.apitester.factory.impl.DefaultGetFactory;
+import de.devbliss.apitester.requestprocess.Getter;
 
 /**
  * Tests the methods of {@link Getter} and its delegates against an embedded local instance of
@@ -115,7 +112,7 @@ public class GetterIntegrationTest {
     @Test
     public void testGetOkWithOwnGetFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context context = Getter.get(uri, new DefaultGetFactory());
+        Context context = Getter.get(uri);
         ApiResponse response = context.apiResponse;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
@@ -136,7 +133,7 @@ public class GetterIntegrationTest {
     public void testGetOkWithOwnGetFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context context = Getter.get(uri, testState, new DefaultGetFactory());
+        Context context = Getter.get(uri, testState);
         ApiResponse response = context.apiResponse;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
@@ -147,7 +144,7 @@ public class GetterIntegrationTest {
     public void testGetWithCustomFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context context = Getter.get(uri, testState, getCustomFactoryWithHeaders());
+        Context context = Getter.get(uri, testState);
         ApiResponse response = context.apiResponse;
         ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -175,7 +172,7 @@ public class GetterIntegrationTest {
     public void testGetWithCookiesAndHeaders() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context context = Getter.get(uri, testState, getCustomFactoryWithHeaders());
+        Context context = Getter.get(uri, testState);
         ApiResponse response = context.apiResponse;
         ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -195,17 +192,5 @@ public class GetterIntegrationTest {
     	returnValue.put(HEADER_NAME1, HEADER_VALUE1);
     	returnValue.put(HEADER_NAME2, HEADER_VALUE2);
     	return returnValue;
-    }
-
-    private GetFactory getCustomFactoryWithHeaders() {
-        return new GetFactory() {
-
-            public HttpGet createGetRequest(URI uri) throws IOException {
-                HttpGet request = new HttpGet(uri);
-                request.setHeader(HEADER_NAME1, HEADER_VALUE1);
-                request.setHeader(HEADER_NAME2, HEADER_VALUE2);
-                return request;
-            }
-        };
     }
 }

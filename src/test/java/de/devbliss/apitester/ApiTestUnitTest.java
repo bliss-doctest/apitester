@@ -42,7 +42,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.factory.DeleteFactory;
-import de.devbliss.apitester.factory.GetFactory;
 import de.devbliss.apitester.factory.HttpDeleteWithBody;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,8 +51,6 @@ public class ApiTestUnitTest {
 
     private static final int STATUS_CODE_TEAPOT = 418;
 
-    @Mock
-    private GetFactory defaultGetFactory;
     @Mock
     private DeleteFactory defaultDeleteFactory;
     @Mock
@@ -66,8 +63,6 @@ public class ApiTestUnitTest {
     private StatusLine statusLine;
     @Mock
     private RequestLine requestLine;
-    @Mock
-    private GetFactory myGetFactory;
     @Mock
     private DeleteFactory myDeleteFactory;
     @Mock
@@ -114,24 +109,6 @@ public class ApiTestUnitTest {
     }
 
     @Test
-    public void testGetUsesDefaultGetFactory() throws Exception {
-        when(defaultGetFactory.createGetRequest(uri)).thenReturn(httpGet);
-
-        ApiTest apiTest = createApiTest();
-        apiTest.get(uri);
-        verify(defaultGetFactory).createGetRequest(eq(uri));
-    }
-
-    @Test
-    public void testGetUsesSpecifiedGetFactory() throws Exception {
-        when(myGetFactory.createGetRequest(uri)).thenReturn(httpGet);
-
-        ApiTest apiTest = createApiTest();
-        apiTest.get(uri, myGetFactory, null);
-        verify(myGetFactory).createGetRequest(eq(uri));
-    }
-
-    @Test
     public void testDeleteUsesDefaultDeleteFactory() throws Exception {
         when(defaultDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
 
@@ -173,7 +150,6 @@ public class ApiTestUnitTest {
 
     @Test
     public void testGetStatusCode() throws Exception {
-        when(defaultGetFactory.createGetRequest(uri)).thenReturn(httpGet);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
 
         ApiTest apiTest = createApiTest();
@@ -242,7 +218,6 @@ public class ApiTestUnitTest {
     private ApiTest createApiTest() {
         ApiTest apiTest = new ApiTest();
         apiTest.setDefaultDeleteFactory(defaultDeleteFactory);
-        apiTest.setDefaultGetFactory(defaultGetFactory);
         apiTest.setTestState(testState);
         return apiTest;
     }

@@ -8,9 +8,11 @@ import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
@@ -48,8 +50,13 @@ public class RequestCreator {
         return request;
     }
 
-    public static <T extends HttpEntityEnclosingRequestBase> Context makeTheCall(T request, Object payload, TestState testState,
-            Map<String, String> additionalHeaders) throws IOException {
+    public static HttpGet createGet(URI uri, TestState testState,
+            Map<String, String> additionalHeaders) {
+        HttpGet request = new HttpGet(uri);
+        return handleHeaders(request, ContentType.TEXT_PLAIN, additionalHeaders);
+    }
+
+    public static <T extends HttpRequestBase> Context makeTheCall(T request, TestState testState) throws IOException {
 
         // IMPORTANT: we have to get the cookies from the testState before making the request
         // because this request could add some cookie to the testState (e.g: the response could have
@@ -83,6 +90,11 @@ public class RequestCreator {
             contentType = ContentType.TEXT_PLAIN;
         }
 
+        return handleHeaders(request, contentType, additionalHeaders);
+    }
+
+    private static <T extends HttpRequestBase> T handleHeaders(T request, ContentType contentType, Map<String, String> additionalHeaders) {
+
         if (additionalHeaders != null) {
             for (String headerName : additionalHeaders.keySet()) {
                 request.addHeader(headerName, additionalHeaders.get(headerName));
@@ -95,5 +107,6 @@ public class RequestCreator {
 
         return request;
     }
+
 
 }
