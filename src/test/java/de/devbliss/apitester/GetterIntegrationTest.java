@@ -141,20 +141,6 @@ public class GetterIntegrationTest {
     }
 
     @Test
-    public void testGetWithCustomFactory() throws Exception {
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context context = Getter.get(uri, testState);
-        ApiResponse response = context.apiResponse;
-        ApiRequest request = context.apiRequest;
-        ApiTestUtil.assertOk(response);
-        DummyDto result = response.payloadJsonAs(DummyDto.class);
-        assertEquals(DummyDto.createSampleInstance(), result);
-        assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
-        assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
-    }
-
-    @Test
     public void testGetWithHeaders() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
@@ -172,7 +158,7 @@ public class GetterIntegrationTest {
     public void testGetWithCookiesAndHeaders() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context context = Getter.get(uri, testState);
+        Context context = Getter.get(uri, testState, createCustomHeaders());
         ApiResponse response = context.apiResponse;
         ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
