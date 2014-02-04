@@ -59,6 +59,7 @@ public class DummyRequestHandler extends AbstractHandler {
             case GET:
                 handleGet(target, response);
                 break;
+            case DELETE:
             case POST:
             case PATCH:
             case PUT:
@@ -94,7 +95,10 @@ public class DummyRequestHandler extends AbstractHandler {
 
             if (desiredResponseCode == HttpServletResponse.SC_OK) {
                 String requestBody = IOUtils.toString(request.getInputStream());
-                response.getWriter().write(requestBody);
+
+                if (requestBody != null) {
+                    response.getWriter().write(requestBody);
+                }
             }
         } catch (Exception e) {
             handleException(e, response);

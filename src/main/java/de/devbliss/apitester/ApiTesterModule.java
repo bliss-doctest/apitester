@@ -23,9 +23,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 
-import de.devbliss.apitester.factory.DeleteFactory;
-import de.devbliss.apitester.factory.impl.DefaultDeleteFactory;
-
 /**
  * Binds all dependencies of ApiTester.
  *
@@ -38,7 +35,6 @@ public class ApiTesterModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(DeleteFactory.class).to(DefaultDeleteFactory.class);
         bind(CookieStore.class).to(BasicCookieStore.class);
     }
 
@@ -55,16 +51,6 @@ public class ApiTesterModule extends AbstractModule {
         DefaultHttpClient client = new DefaultHttpClient();
         client.setCookieStore(cookieStore);
         return new TestState(client, cookieStore);
-    }
-
-    /**
-     * Creates an instance of the default implementation of {@link DeleteFactory} as it is bound in
-     * this module.
-     *
-     * @return
-     */
-    public static DeleteFactory createDeleteFactory() {
-        return injector.getInstance(DeleteFactory.class);
     }
 
     /**

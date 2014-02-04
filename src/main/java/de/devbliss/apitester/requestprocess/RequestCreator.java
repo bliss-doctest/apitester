@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
@@ -23,11 +24,13 @@ import de.devbliss.apitester.ApiResponse;
 import de.devbliss.apitester.ApiTestUtil;
 import de.devbliss.apitester.Context;
 import de.devbliss.apitester.TestState;
+import de.devbliss.apitester.factory.HttpDeleteWithBody;
 
 public class RequestCreator {
 
     private static final Gson gson = new Gson();
     private static final String ENCODING = "UTF-8";
+    private static final ContentType TEXT_PLAIN_UTF8 = ContentType.create(ContentType.TEXT_PLAIN.getMimeType(), ENCODING);
 
     public static HttpPost createPost(URI uri, Object payload, TestState testState,
             Map<String, String> additionalHeaders) throws IOException {
@@ -50,10 +53,20 @@ public class RequestCreator {
         return request;
     }
 
-    public static HttpGet createGet(URI uri, TestState testState,
-            Map<String, String> additionalHeaders) {
+    public static HttpGet createGet(URI uri, TestState testState, Map<String, String> additionalHeaders) {
         HttpGet request = new HttpGet(uri);
-        return handleHeaders(request, ContentType.TEXT_PLAIN, additionalHeaders);
+        return handleHeaders(request, TEXT_PLAIN_UTF8, additionalHeaders);
+    }
+
+    public static HttpDelete createDelete(URI uri, TestState testState, Map<String, String> additionalHeaders) {
+        HttpDelete request = new HttpDelete(uri);
+        return handleHeaders(request, TEXT_PLAIN_UTF8, additionalHeaders);
+    }
+
+    public static HttpDeleteWithBody createDelete(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders)
+            throws IOException {
+        HttpDeleteWithBody request = new HttpDeleteWithBody(uri);
+        return enhanceRequest(request, payload, testState, additionalHeaders);
     }
 
     public static <T extends HttpRequestBase> Context makeTheCall(T request, TestState testState) throws IOException {
@@ -76,7 +89,7 @@ public class RequestCreator {
             String payloadAsString = null;
 
             if (payload instanceof String) {
-                contentType = ContentType.create(ContentType.TEXT_PLAIN.getMimeType(), ENCODING);
+                contentType = TEXT_PLAIN_UTF8;
                 payloadAsString = (String) payload;
             } else {
                 contentType = ContentType.APPLICATION_JSON;
@@ -107,6 +120,5 @@ public class RequestCreator {
 
         return request;
     }
-
 
 }

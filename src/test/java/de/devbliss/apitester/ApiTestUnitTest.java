@@ -16,8 +16,6 @@ package de.devbliss.apitester;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
@@ -41,7 +39,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.devbliss.apitester.factory.DeleteFactory;
 import de.devbliss.apitester.factory.HttpDeleteWithBody;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,8 +49,6 @@ public class ApiTestUnitTest {
     private static final int STATUS_CODE_TEAPOT = 418;
 
     @Mock
-    private DeleteFactory defaultDeleteFactory;
-    @Mock
     private HttpClient httpClient;
     @Mock
     private HttpResponse response;
@@ -63,8 +58,6 @@ public class ApiTestUnitTest {
     private StatusLine statusLine;
     @Mock
     private RequestLine requestLine;
-    @Mock
-    private DeleteFactory myDeleteFactory;
     @Mock
     private HttpGet httpGet;
     @Mock
@@ -106,46 +99,6 @@ public class ApiTestUnitTest {
         when(httpDeleteWithBody.getAllHeaders()).thenReturn(headers);
 
         when(response.getAllHeaders()).thenReturn(headers);
-    }
-
-    @Test
-    public void testDeleteUsesDefaultDeleteFactory() throws Exception {
-        when(defaultDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
-
-        ApiTest apiTest = createApiTest();
-        apiTest.delete(uri);
-        verify(defaultDeleteFactory).createDeleteRequest(eq(uri));
-    }
-
-    @Test
-    public void testDeleteUsesSpecifiedDeleteFactory() throws Exception {
-        when(myDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
-
-        ApiTest apiTest = createApiTest();
-        apiTest.delete(uri, null, myDeleteFactory, null);
-        verify(myDeleteFactory).createDeleteRequest(eq(uri));
-    }
-
-    @Test
-    public void testDeleteWithPayloadUsesGivenDeleteFactory() throws Exception {
-        when(defaultDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
-                httpDeleteWithBody);
-
-        ApiTest apiTest = createApiTest();
-        Object payload = new Object();
-        apiTest.delete(uri, payload);
-        verify(defaultDeleteFactory).createDeleteRequest(eq(uri), eq(payload));
-    }
-
-    @Test
-    public void testDeleteWithPayloadUsesSpecifiedDeleteFactory() throws Exception {
-        when(myDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
-                httpDeleteWithBody);
-
-        ApiTest apiTest = createApiTest();
-        Object payload = new Object();
-        apiTest.delete(uri, payload, myDeleteFactory, null);
-        verify(myDeleteFactory).createDeleteRequest(eq(uri), eq(payload));
     }
 
     @Test
@@ -192,7 +145,6 @@ public class ApiTestUnitTest {
 
     @Test
     public void testDeleteStatusCode() throws Exception {
-        when(defaultDeleteFactory.createDeleteRequest(uri)).thenReturn(httpDelete);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
 
         ApiTest apiTest = createApiTest();
@@ -203,8 +155,6 @@ public class ApiTestUnitTest {
 
     @Test
     public void testDeleteWithPayloadStatusCode() throws Exception {
-        when(defaultDeleteFactory.createDeleteRequest(eq(uri), any(Object.class))).thenReturn(
-                httpDeleteWithBody);
         when(statusLine.getStatusCode()).thenReturn(STATUS_CODE_TEAPOT);
 
         ApiTest apiTest = createApiTest();
@@ -217,7 +167,6 @@ public class ApiTestUnitTest {
     // TODO: to setUp()
     private ApiTest createApiTest() {
         ApiTest apiTest = new ApiTest();
-        apiTest.setDefaultDeleteFactory(defaultDeleteFactory);
         apiTest.setTestState(testState);
         return apiTest;
     }

@@ -24,7 +24,6 @@ import de.devbliss.apitester.ApiTest;
 import de.devbliss.apitester.ApiTesterModule;
 import de.devbliss.apitester.Context;
 import de.devbliss.apitester.TestState;
-import de.devbliss.apitester.factory.DeleteFactory;
 
 /**
  * Contains static methods to perform PUT requests. If you want to make more requests in a series

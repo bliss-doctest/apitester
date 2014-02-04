@@ -21,7 +21,7 @@ import java.util.Map;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import de.devbliss.apitester.factory.DeleteFactory;
+import de.devbliss.apitester.requestprocess.Deleter;
 import de.devbliss.apitester.requestprocess.Getter;
 import de.devbliss.apitester.requestprocess.Patcher;
 import de.devbliss.apitester.requestprocess.Poster;
@@ -67,23 +67,12 @@ import de.devbliss.apitester.requestprocess.Putter;
  */
 public class ApiTest {
 
-    public static final String GET_FACTORY = "getFactory";
-    public static final String DELETE_FACTORY = "deleteFactory";
-    public static final String POST_FACTORY = "postFactory";
-    public static final String PUT_FACTORY = "putFactory";
-    public static final String PATCH_FACTORY = "patchFactory";
     public static final String TEST_STATE = "testState";
 
-    private DeleteFactory deleteDefaultFactory;
     private TestState testState;
 
     public enum HTTP_REQUEST {
         POST, GET, PUT, DELETE, PATCH;
-    }
-
-    @Inject(optional = true)
-    public void setDefaultDeleteFactory(@Named(DELETE_FACTORY) DeleteFactory deleteFactory) {
-        this.deleteDefaultFactory = deleteFactory;
     }
 
     @Inject(optional = true)
@@ -96,14 +85,6 @@ public class ApiTest {
             setTestState(ApiTesterModule.createTestState());
         }
         return testState;
-    }
-
-    private DeleteFactory getDefaultDeleteFactory() {
-        if (deleteDefaultFactory == null) {
-            setDefaultDeleteFactory(ApiTesterModule.createDeleteFactory());
-        }
-
-        return deleteDefaultFactory;
     }
 
     /**
@@ -173,7 +154,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context delete(URI uri) throws IOException {
-        return delete(uri, null, getDefaultDeleteFactory(), null);
+        return delete(uri, null, null);
     }
 
     /**
@@ -187,7 +168,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context delete(URI uri, Map<String, String> additionalHeaders) throws IOException {
-        return delete(uri, null, getDefaultDeleteFactory(), additionalHeaders);
+        return delete(uri, null, additionalHeaders);
     }
 
     /**
@@ -201,22 +182,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context delete(URI uri, Object payload) throws IOException {
-        return delete(uri, payload, getDefaultDeleteFactory(), null);
-    }
-
-    /**
-     * Performs a delete request using the given {@link DeleteFactory} and the {@link TestState} of
-     * this instance. The payload is not forbidden in the HTTP specification and so its supported
-     * here. You also can add additional headers.
-     *
-     * @param uri
-     * @param payload
-     * @param additionalHeaders
-     * @return
-     * @throws IOException
-     */
-    public Context delete(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return delete(uri, payload, getDefaultDeleteFactory(), additionalHeaders);
+        return delete(uri, payload, null);
     }
 
     /**
@@ -231,8 +197,8 @@ public class ApiTest {
      * @return
      * @throws IOException
      */
-    public Context delete(URI uri, Object payload, DeleteFactory deleteFactory, Map<String, String> additionalHeaders) throws IOException {
-        return Deleter.delete(uri, getTestState(), deleteFactory, payload, additionalHeaders);
+    public Context delete(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
+        return Deleter.delete(uri, getTestState(), payload, additionalHeaders);
     }
 
     /**

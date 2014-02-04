@@ -20,9 +20,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
@@ -47,20 +45,7 @@ import de.devbliss.apitester.requestprocess.Poster;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PosterIntegrationTest {
-
-    private static final String HEADER_VALUE1 = "header_value1";
-    private static final String HEADER_NAME1 = "header_name1";
-    private static final String HEADER_VALUE2 = "header_value2";
-    private static final String HEADER_NAME2 = "header_name2";
-    private static final String COOKIE_VALUE_1 = "cookie_value_1";
-    private static final String COOKIE_NAME_1 = "cookie_name_1";
-    private static final String COOKIE_VALUE_2 = "cookie_value_2";
-    private static final String COOKIE_NAME_2 = "cookie_name_2";
-
-    private static final String HEADER_NAME_CONTENTTYPE = "content-type";
-    private static final String HEADER_VALUE_CONTENTTYPE_JSON = "application/json; charset=UTF-8";
-    private static final String HEADER_VALUE_CONTENTTYPE_TEXT = "text/plain;charset=UTF-8";
+public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
 
     @Mock
     private CookieStore cookieStore;
@@ -95,7 +80,7 @@ public class PosterIntegrationTest {
 
     @Test
     public void testPostOk() throws Exception {
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        URI uri = server.buildPostRequestUri(HttpStatus.SC_OK);
         Context wrapper = Poster.post(uri);
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
@@ -194,16 +179,5 @@ public class PosterIntegrationTest {
         assertNull(request.getCookie(HEADER_NAME1));
         assertNull(request.getHeader(COOKIE_NAME_1));
 
-    }
-
-    private Map<String,String> createCustomHeaders() {
-    	Map<String, String> returnValue = new HashMap<String, String>();
-    	returnValue.put(HEADER_NAME1, HEADER_VALUE1);
-    	returnValue.put(HEADER_NAME2, HEADER_VALUE2);
-    	return returnValue;
-    }
-
-    private DummyDto createPayload() {
-        return new DummyDto("Don't care, just some text", 1981, Boolean.FALSE);
     }
 }
