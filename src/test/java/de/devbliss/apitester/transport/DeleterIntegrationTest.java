@@ -16,20 +16,13 @@ package de.devbliss.apitester.transport;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.client.CookieStore;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.devbliss.apitester.AbstractRequestIntegrationTest;
@@ -41,7 +34,6 @@ import de.devbliss.apitester.entity.ApiRequest;
 import de.devbliss.apitester.entity.ApiResponse;
 import de.devbliss.apitester.entity.Context;
 import de.devbliss.apitester.entity.TestState;
-import de.devbliss.apitester.transport.Deleter;
 
 /**
  * Tests the methods of {@link Deleter} and its delegates against an embedded local instance of {@link DummyApiServer}
@@ -52,37 +44,6 @@ import de.devbliss.apitester.transport.Deleter;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DeleterIntegrationTest extends AbstractRequestIntegrationTest {
-
-    @Mock
-    private CookieStore cookieStore;
-    @Mock
-    private Cookie cookie1;
-    @Mock
-    private Cookie cookie2;
-
-    private DummyApiServer server;
-    private ArrayList<Cookie> cookies;
-
-    @Before
-    public void setUp() throws Exception {
-        server = new DummyApiServer();
-        server.start(false);
-
-        when(cookie1.getName()).thenReturn(COOKIE_NAME_1);
-        when(cookie1.getValue()).thenReturn(COOKIE_VALUE_1);
-        when(cookie2.getName()).thenReturn(COOKIE_NAME_2);
-        when(cookie2.getValue()).thenReturn(COOKIE_VALUE_2);
-
-        cookies = new ArrayList<Cookie>();
-        cookies.add(cookie1);
-        cookies.add(cookie2);
-        when(cookieStore.getCookies()).thenReturn(cookies);
-    }
-
-    @After
-    public void shutDown() throws Exception {
-        server.stop();
-    }
 
     @Test
     public void testDeleteOk() throws Exception {

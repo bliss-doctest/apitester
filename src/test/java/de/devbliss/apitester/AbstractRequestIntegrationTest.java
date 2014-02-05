@@ -1,10 +1,20 @@
 package de.devbliss.apitester;
 
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.http.client.CookieStore;
+import org.apache.http.cookie.Cookie;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
+import org.mockito.Mock;
 
+import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
 
 @Ignore
@@ -23,8 +33,39 @@ public abstract class AbstractRequestIntegrationTest {
     protected static final String HEADER_VALUE_CONTENTTYPE_JSON = "application/json; charset=UTF-8";
     protected static final String HEADER_VALUE_CONTENTTYPE_TEXT = "text/plain; charset=UTF-8";
 
+    @Mock
+    protected CookieStore cookieStore;
+    @Mock
+    protected Cookie cookie1;
+    @Mock
+    protected Cookie cookie2;
+
+    protected DummyApiServer server;
+    protected List<Cookie> cookies;
+
     public AbstractRequestIntegrationTest() {
         super();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        server = new DummyApiServer();
+        server.start(false);
+
+        when(cookie1.getName()).thenReturn(COOKIE_NAME_1);
+        when(cookie1.getValue()).thenReturn(COOKIE_VALUE_1);
+        when(cookie2.getName()).thenReturn(COOKIE_NAME_2);
+        when(cookie2.getValue()).thenReturn(COOKIE_VALUE_2);
+
+        cookies = new ArrayList<Cookie>();
+        cookies.add(cookie1);
+        cookies.add(cookie2);
+        when(cookieStore.getCookies()).thenReturn(cookies);
+    }
+
+    @After
+    public void shutDown() throws Exception {
+        server.stop();
     }
 
     protected Map<String,String> createCustomHeaders() {
