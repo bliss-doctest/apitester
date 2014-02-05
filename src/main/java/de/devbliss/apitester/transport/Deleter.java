@@ -56,7 +56,7 @@ public class Deleter {
         return delete(uri, null, payload, null);
     }
 
-    public static Context delete(URI uri, Object payload, TestState testState) throws IOException {
+    public static Context delete(URI uri, TestState testState, Object payload) throws IOException {
         return delete(uri, testState, payload, null);
     }
 

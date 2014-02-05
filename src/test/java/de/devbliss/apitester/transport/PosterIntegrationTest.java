@@ -100,7 +100,7 @@ public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState);
+        Context wrapper = Poster.post(uri, testState, payload);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -116,7 +116,7 @@ public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri,payload,testState,createCustomHeaders());
+        Context wrapper = Poster.post(uri, testState, payload, createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -131,7 +131,7 @@ public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context wrapper = Poster.post(uri, payload, testState, createCustomHeaders());
+        Context wrapper = Poster.post(uri, testState, payload, createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);

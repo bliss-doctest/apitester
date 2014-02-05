@@ -59,7 +59,7 @@ public class Putter {
         return put(uri, null, payload, null);
     }
 
-    public static Context put(URI uri, Object payload, TestState testState) throws IOException {
+    public static Context put(URI uri, TestState testState, Object payload) throws IOException {
         return put(uri, testState, payload, null);
     }
 

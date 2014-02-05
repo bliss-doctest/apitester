@@ -124,7 +124,7 @@ public class PatcherIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Patcher.patch(uri, payload, testState);
+        Context wrapper = Patcher.patch(uri, testState, payload);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -139,7 +139,7 @@ public class PatcherIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Patcher.patch(uri, payload, testState, null);
+        Context wrapper = Patcher.patch(uri, testState, payload, null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -154,7 +154,7 @@ public class PatcherIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Patcher.patch(uri,payload,testState,createCustomHeaders());
+        Context wrapper = Patcher.patch(uri, testState, payload, createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -169,7 +169,7 @@ public class PatcherIntegrationTest extends AbstractRequestIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context wrapper = Patcher.patch(uri, payload, testState, createCustomHeaders());
+        Context wrapper = Patcher.patch(uri, testState, payload, createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);

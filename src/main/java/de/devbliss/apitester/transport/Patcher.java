@@ -48,7 +48,7 @@ public class Patcher {
     }
 
     public static Context patch(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return patch(uri, payload, null, additionalHeaders);
+        return patch(uri, null, payload, additionalHeaders);
     }
 
     public static Context patch(URI uri, TestState testState) throws IOException {
@@ -56,14 +56,14 @@ public class Patcher {
     }
 
     public static Context patch(URI uri, Object payload) throws IOException {
-        return patch(uri, payload, null, null);
+        return patch(uri, null, payload, null);
     }
 
-    public static Context patch(URI uri, Object payload, TestState testState) throws IOException {
-        return patch(uri, payload, testState, null);
+    public static Context patch(URI uri, TestState testState, Object payload) throws IOException {
+        return patch(uri, testState, payload, null);
     }
 
-    public static Context patch(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders)
+    public static Context patch(URI uri, TestState testState, Object payload, Map<String, String> additionalHeaders)
             throws IOException {
 
         if (testState == null) {

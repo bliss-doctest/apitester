@@ -82,7 +82,7 @@ public class DeleterIntegrationTest extends AbstractRequestIntegrationTest {
     public void testDeleteOkWithOwnTestStateAndJsonPayload() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_NO_CONTENT);
         DummyDto payload = createPayload();
-        Context context = Deleter.delete(uri, payload, ApiTesterModule.createTestState());
+        Context context = Deleter.delete(uri, ApiTesterModule.createTestState(), payload);
         ApiRequest request = context.apiRequest;
         ApiResponse response = context.apiResponse;
         ApiTestUtil.assertNoContent(response);

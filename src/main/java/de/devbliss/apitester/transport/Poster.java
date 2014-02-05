@@ -48,7 +48,7 @@ public class Poster {
     }
 
     public static Context post(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return post(uri, payload, null, additionalHeaders);
+        return post(uri, null, payload, additionalHeaders);
     }
 
     public static Context post(URI uri, TestState testState) throws IOException {
@@ -56,14 +56,14 @@ public class Poster {
     }
 
     public static Context post(URI uri, Object payload) throws IOException {
-        return post(uri, payload, null, null);
+        return post(uri, null, payload, null);
     }
 
-    public static Context post(URI uri, Object payload, TestState testState) throws IOException {
-        return post(uri, payload, testState, null);
+    public static Context post(URI uri, TestState testState, Object payload) throws IOException {
+        return post(uri, testState, payload, null);
     }
 
-    public static Context post(URI uri, Object payload, TestState testState, Map<String, String> additionalHeaders)
+    public static Context post(URI uri, TestState testState, Object payload, Map<String, String> additionalHeaders)
             throws IOException {
 
         if (testState == null) {
