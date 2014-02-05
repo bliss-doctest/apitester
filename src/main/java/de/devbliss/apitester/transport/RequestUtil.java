@@ -2,6 +2,7 @@ package de.devbliss.apitester.transport;
 
 import static de.devbliss.apitester.Constants.HEADER_NAME_CONTENT_TYPE;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -16,10 +17,16 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 
 import com.google.gson.Gson;
 
 import de.devbliss.apitester.ApiTestUtil;
+import de.devbliss.apitester.Constants;
 import de.devbliss.apitester.entity.ApiRequest;
 import de.devbliss.apitester.entity.ApiResponse;
 import de.devbliss.apitester.entity.Context;
@@ -41,6 +48,13 @@ public class RequestUtil {
             Map<String, String> additionalHeaders) throws IOException {
         HttpPost request = new HttpPost(uri);
         request = enhanceRequest(request, payload, testState, additionalHeaders);
+        return request;
+    }
+
+    public static HttpPost createUploadPost(URI uri, File fileToUpload, TestState testState, String paramName,
+            Map<String, String> additionalHeaders) throws IOException {
+        HttpPost request = new HttpPost(uri);
+        request = enhanceUploadRequest(request, fileToUpload, testState, paramName, additionalHeaders);
         return request;
     }
 
@@ -104,6 +118,7 @@ public class RequestUtil {
      * @param additionalHeaders
      * @return the enhanced request (for chaining)
      * @throws IOException
+     * 
      */
     private static <T extends HttpEntityEnclosingRequestBase> T enhanceRequest(T request, Object payload, TestState testState,
             Map<String, String> additionalHeaders) throws IOException {
@@ -128,7 +143,26 @@ public class RequestUtil {
             contentType = ContentType.TEXT_PLAIN;
         }
 
+        HttpParams params = new BasicHttpParams();
+        params.setParameter(Constants.HANDLE_REDIRECTS, false);
+        request.setParams(params);
         return handleHeaders(request, contentType, additionalHeaders);
+    }
+
+    private static <T extends HttpEntityEnclosingRequestBase> T enhanceUploadRequest(T request, File fileToUpload, TestState testState,
+            String paramName, Map<String, String> additionalHeaders) throws IOException {
+        FileBody fileBodyToUpload = new FileBody(fileToUpload);
+        MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        entity.addPart(paramName, fileBodyToUpload);
+        request.setEntity(entity);
+
+        if (additionalHeaders != null) {
+            for (String headerName : additionalHeaders.keySet()) {
+                request.addHeader(headerName, additionalHeaders.get(headerName));
+            }
+        }
+
+        return request;
     }
 
     /**
