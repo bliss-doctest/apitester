@@ -31,7 +31,7 @@ public abstract class AbstractRequestIntegrationTest {
 
     protected static final String HEADER_NAME_CONTENTTYPE = "content-type";
     protected static final String HEADER_VALUE_CONTENTTYPE_JSON = "application/json; charset=UTF-8";
-    protected static final String HEADER_VALUE_CONTENTTYPE_TEXT = "text/plain; charset=UTF-8";
+    protected static final String HEADER_VALUE_CONTENTTYPE_TEXT = "text/plain;charset=UTF-8";
 
     @Mock
     protected CookieStore cookieStore;
