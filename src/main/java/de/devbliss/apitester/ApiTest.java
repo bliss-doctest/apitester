@@ -116,7 +116,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context post(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return Poster.post(uri, payload, getTestState(), additionalHeaders);
+        return Poster.post(uri, getTestState(), payload, additionalHeaders);
     }
 
 
@@ -312,7 +312,7 @@ public class ApiTest {
      * @throws IOException
      */
     public Context patch(URI uri, Object payload, Map<String, String> additionalHeaders) throws IOException {
-        return Patcher.patch(uri, payload, getTestState(), additionalHeaders);
+        return Patcher.patch(uri, getTestState(), payload, additionalHeaders);
     }
 
     /**
