@@ -37,6 +37,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import de.devbliss.apitester.entity.ApiRequest;
+import de.devbliss.apitester.entity.ApiResponse;
+import de.devbliss.apitester.entity.Cookie;
+
 /**
  * 
  * Test for @ApiTestUtil

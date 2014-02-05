@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester.factory;
+package de.devbliss.apitester.transport;
 
 import java.net.URI;
 

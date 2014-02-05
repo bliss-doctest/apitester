@@ -39,7 +39,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.devbliss.apitester.factory.HttpDeleteWithBody;
+import de.devbliss.apitester.entity.ApiResponse;
+import de.devbliss.apitester.entity.TestState;
+import de.devbliss.apitester.transport.HttpDeleteWithBody;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApiTestUnitTest {

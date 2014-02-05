@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester.requestprocess;
+package de.devbliss.apitester.transport;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,8 +22,8 @@ import org.apache.http.client.methods.HttpPut;
 
 import de.devbliss.apitester.ApiTest;
 import de.devbliss.apitester.ApiTesterModule;
-import de.devbliss.apitester.Context;
-import de.devbliss.apitester.TestState;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
 
 /**
  * Contains static methods to perform PUT requests. If you want to make more requests in a series
@@ -70,7 +70,7 @@ public class Putter {
             testState = ApiTesterModule.createTestState();
         }
 
-        HttpPut request = RequestCreator.createPut(uri, payload, testState, additionalHeaders);
-        return RequestCreator.makeTheCall(request, testState);
+        HttpPut request = RequestUtil.createPut(uri, payload, testState, additionalHeaders);
+        return RequestUtil.call(request, testState);
     }
 }

@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester.requestprocess;
+package de.devbliss.apitester.transport;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,8 +22,8 @@ import org.apache.http.client.methods.HttpGet;
 
 import de.devbliss.apitester.ApiTest;
 import de.devbliss.apitester.ApiTesterModule;
-import de.devbliss.apitester.Context;
-import de.devbliss.apitester.TestState;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
 
 /**
  * Contains static methods to perform GET requests. If you want to make more requests in a series
@@ -54,7 +54,7 @@ public class Getter {
             testState = ApiTesterModule.createTestState();
         }
 
-        HttpGet request = RequestCreator.createGet(uri, testState, additionalHeaders);
-        return RequestCreator.makeTheCall(request, testState);
+        HttpGet request = RequestUtil.createGet(uri, testState, additionalHeaders);
+        return RequestUtil.call(request, testState);
     }
 }

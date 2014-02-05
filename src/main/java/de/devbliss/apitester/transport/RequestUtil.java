@@ -1,4 +1,4 @@
-package de.devbliss.apitester.requestprocess;
+package de.devbliss.apitester.transport;
 
 import static de.devbliss.apitester.Constants.HEADER_NAME_CONTENT_TYPE;
 
@@ -19,14 +19,19 @@ import org.apache.http.entity.StringEntity;
 
 import com.google.gson.Gson;
 
-import de.devbliss.apitester.ApiRequest;
-import de.devbliss.apitester.ApiResponse;
 import de.devbliss.apitester.ApiTestUtil;
-import de.devbliss.apitester.Context;
-import de.devbliss.apitester.TestState;
-import de.devbliss.apitester.factory.HttpDeleteWithBody;
+import de.devbliss.apitester.entity.ApiRequest;
+import de.devbliss.apitester.entity.ApiResponse;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
 
-public class RequestCreator {
+/**
+ * Knows how to build requests of different types (GET, POST, ...) and how to send them.
+ * 
+ * @author henningschuetz
+ * 
+ */
+public class RequestUtil {
 
     private static final Gson gson = new Gson();
     private static final String ENCODING = "UTF-8";
@@ -69,7 +74,16 @@ public class RequestCreator {
         return enhanceRequest(request, payload, testState, additionalHeaders);
     }
 
-    public static <T extends HttpRequestBase> Context makeTheCall(T request, TestState testState) throws IOException {
+    /**
+     * Makes the actual call to the backend.
+     * 
+     * @param request request as created by the create...() methods in this class.
+     * @param testState contains cookies, testState etc.
+     * @return context containing the actual request and response
+     * 
+     * @throws IOException
+     */
+    public static <T extends HttpRequestBase> Context call(T request, TestState testState) throws IOException {
 
         // IMPORTANT: we have to get the cookies from the testState before making the request
         // because this request could add some cookie to the testState (e.g: the response could have
@@ -80,6 +94,17 @@ public class RequestCreator {
         return new Context(apiResponse, apiRequest);
     }
 
+    /**
+     * Sets the appropriate content type and encoding in the payload of a given request (in case there is a payload),
+     * and calls {@link #handleHeaders(HttpRequestBase, ContentType, Map)} afterwards.
+     * 
+     * @param request
+     * @param payload
+     * @param testState
+     * @param additionalHeaders
+     * @return the enhanced request (for chaining)
+     * @throws IOException
+     */
     private static <T extends HttpEntityEnclosingRequestBase> T enhanceRequest(T request, Object payload, TestState testState,
             Map<String, String> additionalHeaders) throws IOException {
 
@@ -106,6 +131,15 @@ public class RequestCreator {
         return handleHeaders(request, contentType, additionalHeaders);
     }
 
+    /**
+     * Sets additional headers to a given request and creates appropriate content type header in the request in case it
+     * does not contain such headers yet.
+     * 
+     * @param request
+     * @param contentType
+     * @param additionalHeaders
+     * @return the enhanced request (for chaining)
+     */
     private static <T extends HttpRequestBase> T handleHeaders(T request, ContentType contentType, Map<String, String> additionalHeaders) {
 
         if (additionalHeaders != null) {

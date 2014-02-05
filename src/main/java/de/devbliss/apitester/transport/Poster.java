@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester.requestprocess;
+package de.devbliss.apitester.transport;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,8 +22,8 @@ import org.apache.http.client.methods.HttpPost;
 
 import de.devbliss.apitester.ApiTest;
 import de.devbliss.apitester.ApiTesterModule;
-import de.devbliss.apitester.Context;
-import de.devbliss.apitester.TestState;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
 
 /**
  * Contains static methods to perform POST requests. If you want to make more requests in a series
@@ -70,7 +70,7 @@ public class Poster {
             testState = ApiTesterModule.createTestState();
         }
 
-        HttpPost request = RequestCreator.createPost(uri, payload, testState, additionalHeaders);
-        return RequestCreator.makeTheCall(request, testState);
+        HttpPost request = RequestUtil.createPost(uri, payload, testState, additionalHeaders);
+        return RequestUtil.call(request, testState);
     }
 }

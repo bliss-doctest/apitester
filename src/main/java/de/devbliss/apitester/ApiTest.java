@@ -21,11 +21,13 @@ import java.util.Map;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import de.devbliss.apitester.requestprocess.Deleter;
-import de.devbliss.apitester.requestprocess.Getter;
-import de.devbliss.apitester.requestprocess.Patcher;
-import de.devbliss.apitester.requestprocess.Poster;
-import de.devbliss.apitester.requestprocess.Putter;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
+import de.devbliss.apitester.transport.Deleter;
+import de.devbliss.apitester.transport.Getter;
+import de.devbliss.apitester.transport.Patcher;
+import de.devbliss.apitester.transport.Poster;
+import de.devbliss.apitester.transport.Putter;
 
 /**
  * Entrypoint class for performing api calls.

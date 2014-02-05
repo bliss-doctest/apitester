@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester.requestprocess;
+package de.devbliss.apitester.transport;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,8 +22,8 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 import de.devbliss.apitester.ApiTest;
 import de.devbliss.apitester.ApiTesterModule;
-import de.devbliss.apitester.Context;
-import de.devbliss.apitester.TestState;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
 
 
 /**
@@ -69,11 +69,11 @@ public class Deleter {
         HttpRequestBase request = null;
 
         if (payload != null) {
-            request = RequestCreator.createDelete(uri, payload, testState, additionalHeaders);
+            request = RequestUtil.createDelete(uri, payload, testState, additionalHeaders);
         } else {
-            request = RequestCreator.createDelete(uri, testState, additionalHeaders);
+            request = RequestUtil.createDelete(uri, testState, additionalHeaders);
         }
 
-        return RequestCreator.makeTheCall(request, testState);
+        return RequestUtil.call(request, testState);
     }
 }

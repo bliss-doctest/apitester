@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.transport;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -32,9 +32,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import de.devbliss.apitester.AbstractRequestIntegrationTest;
+import de.devbliss.apitester.ApiTestUtil;
+import de.devbliss.apitester.ApiTesterModule;
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.requestprocess.Deleter;
+import de.devbliss.apitester.entity.ApiRequest;
+import de.devbliss.apitester.entity.ApiResponse;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
+import de.devbliss.apitester.transport.Deleter;
 
 /**
  * Tests the methods of {@link Deleter} and its delegates against an embedded local instance of {@link DummyApiServer}

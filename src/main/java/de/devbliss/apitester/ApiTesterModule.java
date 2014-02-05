@@ -23,6 +23,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 
+import de.devbliss.apitester.entity.TestState;
+
 /**
  * Binds all dependencies of ApiTester.
  *

@@ -21,7 +21,7 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
-import de.devbliss.apitester.ApiResponse;
+import de.devbliss.apitester.entity.ApiResponse;
 
 /**
  * Handles sending assertions that were thrown on the server back to the client properly

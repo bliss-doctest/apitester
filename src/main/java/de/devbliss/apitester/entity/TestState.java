@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.entity;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

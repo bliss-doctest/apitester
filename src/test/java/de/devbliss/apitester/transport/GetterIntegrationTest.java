@@ -12,15 +12,17 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.transport;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
@@ -33,19 +35,34 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import de.devbliss.apitester.ApiTestUtil;
+import de.devbliss.apitester.ApiTesterModule;
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.requestprocess.Poster;
+import de.devbliss.apitester.entity.ApiRequest;
+import de.devbliss.apitester.entity.ApiResponse;
+import de.devbliss.apitester.entity.Context;
+import de.devbliss.apitester.entity.TestState;
+import de.devbliss.apitester.transport.Getter;
 
 /**
- * Tests the methods of {@link Poster} and its delegates against an embedded local instance of
+ * Tests the methods of {@link Getter} and its delegates against an embedded local instance of
  * {@link DummyApiServer} with "real" HTTP requests.
  *
  * @author hschuetz
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
+public class GetterIntegrationTest {
+
+    private static final String HEADER_VALUE1 = "header_value1";
+    private static final String HEADER_NAME1 = "header_name1";
+    private static final String HEADER_VALUE2 = "header_value2";
+    private static final String HEADER_NAME2 = "header_name2";
+    private static final String COOKIE_VALUE_1 = "cookie_value_1";
+    private static final String COOKIE_NAME_1 = "cookie_name_1";
+    private static final String COOKIE_VALUE_2 = "cookie_value_2";
+    private static final String COOKIE_NAME_2 = "cookie_name_2";
 
     @Mock
     private CookieStore cookieStore;
@@ -55,7 +72,7 @@ public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
     private Cookie cookie2;
 
     private DummyApiServer server;
-    private List<Cookie> cookies;
+    private ArrayList<Cookie> cookies;
 
     @Before
     public void setUp() throws Exception {
@@ -79,98 +96,80 @@ public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
     }
 
     @Test
-    public void testPostOk() throws Exception {
-        URI uri = server.buildPostRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri);
-        ApiRequest request = wrapper.apiRequest;
-        ApiResponse response = wrapper.apiResponse;
-        ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
-
-    @Test
-    public void testPostOkWithJsonPayload() throws Exception {
-        DummyDto payload = createPayload();
+    public void testGetOk() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, payload);
-        ApiRequest request = wrapper.apiRequest;
-        ApiResponse response = wrapper.apiResponse;
+        Context context = Getter.get(uri);
+        ApiResponse response = context.apiResponse;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
-        assertEquals(payload, result);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-        assertEquals(HEADER_VALUE_CONTENTTYPE_JSON, response.getHeader(HEADER_NAME_CONTENTTYPE));
+        assertEquals(DummyDto.createSampleInstance(), result);
     }
 
     @Test
-    public void testPostOkWithStringPayload() throws Exception {
-        final String payload = "just some string";
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, payload);
-        ApiRequest request = wrapper.apiRequest;
-        ApiResponse response = wrapper.apiResponse;
-        ApiTestUtil.assertOk(response);
-        assertEquals(HEADER_VALUE_CONTENTTYPE_TEXT, response.getHeader(HEADER_NAME_CONTENTTYPE));
-        assertEquals(payload, response.payload);
-        assertEquals("POST", request.httpMethod);
+    public void testGetNoContent() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_NO_CONTENT);
+        Context context = Getter.get(uri);
+        ApiResponse response = context.apiResponse;
+        ApiTestUtil.assertNoContent(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertFalse(DummyDto.createSampleInstance().equals(result));
     }
 
     @Test
-    public void testPostOkWithOwnTestState() throws Exception {
+    public void testGetOkWithOwnGetFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, testState);
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
-        ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
-    }
-
-    @Test
-    public void testPostOkWithPayloadAndOwnTestState() throws Exception {
-        DummyDto payload = createPayload();
-        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState);
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
+        Context context = Getter.get(uri);
+        ApiResponse response = context.apiResponse;
         ApiTestUtil.assertOk(response);
         DummyDto result = response.payloadJsonAs(DummyDto.class);
-        assertEquals(payload, result);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        assertEquals(DummyDto.createSampleInstance(), result);
     }
 
+    @Test
+    public void testGetOkWithOwnTestState() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        Context context = Getter.get(uri, ApiTesterModule.createTestState());
+        ApiResponse response = context.apiResponse;
+        ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
+    }
 
     @Test
-    public void testPostWithHeaders() throws Exception {
-        DummyDto payload = createPayload();
+    public void testGetOkWithOwnGetFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri,payload,testState,createCustomHeaders());
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
+        Context context = Getter.get(uri, testState);
+        ApiResponse response = context.apiResponse;
         ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
+    }
+
+    @Test
+    public void testGetWithHeaders() throws Exception {
+        URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
+        TestState testState = ApiTesterModule.createTestState();
+        Context context = Getter.get(uri, testState, createCustomHeaders());
+        ApiResponse response = context.apiResponse;
+        ApiRequest request = context.apiRequest;
+        ApiTestUtil.assertOk(response);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
         assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
         assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
     }
 
     @Test
-    public void testPostWithCookiesAndHeaders() throws Exception {
-        DummyDto payload = createPayload();
+    public void testGetWithCookiesAndHeaders() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = new TestState(new DefaultHttpClient(), cookieStore);
-        Context wrapper = Poster.post(uri, payload, testState, createCustomHeaders());
-        ApiResponse response = wrapper.apiResponse;
-        ApiRequest request = wrapper.apiRequest;
+        Context context = Getter.get(uri, testState, createCustomHeaders());
+        ApiResponse response = context.apiResponse;
+        ApiRequest request = context.apiRequest;
         ApiTestUtil.assertOk(response);
-        assertEquals(uri, request.uri);
-        assertEquals("POST", request.httpMethod);
+        DummyDto result = response.payloadJsonAs(DummyDto.class);
+        assertEquals(DummyDto.createSampleInstance(), result);
         assertEquals(HEADER_VALUE1, request.getHeader(HEADER_NAME1));
         assertEquals(HEADER_VALUE2, request.getHeader(HEADER_NAME2));
         assertEquals(COOKIE_VALUE_1, request.getCookie(COOKIE_NAME_1));
@@ -178,6 +177,12 @@ public class PosterIntegrationTest extends AbstractRequestIntegrationTest {
 
         assertNull(request.getCookie(HEADER_NAME1));
         assertNull(request.getHeader(COOKIE_NAME_1));
+    }
 
+    private Map<String,String> createCustomHeaders() {
+    	Map<String, String> returnValue = new HashMap<String, String>();
+    	returnValue.put(HEADER_NAME1, HEADER_VALUE1);
+    	returnValue.put(HEADER_NAME2, HEADER_VALUE2);
+    	return returnValue;
     }
 }

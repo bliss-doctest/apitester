@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.entity;
 
 
 /**

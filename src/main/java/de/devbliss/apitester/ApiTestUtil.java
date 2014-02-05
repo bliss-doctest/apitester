@@ -31,6 +31,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
+import de.devbliss.apitester.entity.ApiRequest;
+import de.devbliss.apitester.entity.ApiResponse;
+import de.devbliss.apitester.entity.Cookie;
+
 /**
  * Some helper methods for api testing.
  * 

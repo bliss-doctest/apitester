@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.devbliss.apitester;
+package de.devbliss.apitester.entity;
 
 import static de.devbliss.apitester.dummyserver.HandlerUtils.handleErrors;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -27,8 +27,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.devbliss.apitester.ApiTest;
 import de.devbliss.apitester.dummyserver.DummyApiServer;
 import de.devbliss.apitester.dummyserver.Handler;
+import de.devbliss.apitester.entity.Cookie;
 
 public class CookieIntegrationTest {
     private DummyApiServer server;
