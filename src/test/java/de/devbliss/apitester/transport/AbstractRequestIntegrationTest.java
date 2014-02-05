@@ -1,4 +1,4 @@
-package de.devbliss.apitester;
+package de.devbliss.apitester.transport;
 
 import static org.mockito.Mockito.when;
 

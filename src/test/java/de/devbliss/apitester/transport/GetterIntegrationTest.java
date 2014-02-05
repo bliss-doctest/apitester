@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.devbliss.apitester.AbstractRequestIntegrationTest;
 import de.devbliss.apitester.ApiTestUtil;
 import de.devbliss.apitester.ApiTesterModule;
 import de.devbliss.apitester.dummyserver.DummyApiServer;
