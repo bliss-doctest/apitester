@@ -1,11 +1,11 @@
 /*
  * Copyright 2013, devbliss GmbH
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -18,13 +18,17 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
+import de.devbliss.apitester.dummyserver.DummyApiServer;
+import de.devbliss.apitester.dummyserver.DummyDto;
+import de.devbliss.apitester.factory.PostFactory;
+import de.devbliss.apitester.factory.impl.DefaultPostFactory;
+import de.devbliss.apitester.factory.impl.EntityBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
@@ -37,14 +41,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.devbliss.apitester.dummyserver.DummyApiServer;
-import de.devbliss.apitester.dummyserver.DummyDto;
-import de.devbliss.apitester.factory.PostFactory;
-import de.devbliss.apitester.factory.impl.DefaultPostFactory;
-
 /**
- * Tests the methods of {@link Poster} and its delegates against an embedded local instance of
- * {@link DummyApiServer} with "real" HTTP requests.
+ * Tests the methods of {@link Poster} and its delegates against an embedded local instance of {@link DummyApiServer}
+ * with "real" HTTP requests.
  *
  * @author hschuetz
  *
@@ -71,10 +70,13 @@ public class PosterIntegrationTest {
     private DummyApiServer server;
     private List<Cookie> cookies;
 
+    private EntityBuilder entityBuilder;
+
     @Before
     public void setUp() throws Exception {
         server = new DummyApiServer();
         server.start(false);
+        entityBuilder = new EntityBuilder();
 
         when(cookie1.getName()).thenReturn(COOKIE_NAME_1);
         when(cookie1.getValue()).thenReturn(COOKIE_VALUE_1);
@@ -118,9 +120,23 @@ public class PosterIntegrationTest {
     }
 
     @Test
+    public void testPostOkWithStringPayload() throws Exception {
+        final String payload = "someStringPayload";
+        URI uri = server.buildPostRequestUri(HttpStatus.SC_OK);
+        Context wrapper = Poster.post(uri, payload);
+        ApiRequest request = wrapper.apiRequest;
+        ApiResponse response = wrapper.apiResponse;
+        ApiTestUtil.assertOk(response);
+        String result = response.payloadJsonAs(String.class);
+        assertEquals(payload, result);
+        assertEquals(uri, request.uri);
+        assertEquals("POST", request.httpMethod);
+    }
+
+    @Test
     public void testPostOkWithOwnPostFactory() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, new DefaultPostFactory());
+        Context wrapper = Poster.post(uri, new DefaultPostFactory(entityBuilder));
         ApiRequest request = wrapper.apiRequest;
         ApiResponse response = wrapper.apiResponse;
         ApiTestUtil.assertOk(response);
@@ -144,7 +160,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithOwnPostFactoryAndTestState() throws Exception {
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, new DefaultPostFactory(), testState);
+        Context wrapper = Poster.post(uri, new DefaultPostFactory(entityBuilder), testState);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -156,7 +172,7 @@ public class PosterIntegrationTest {
     public void testPostOkWithPayloadAndOwnPostFactory() throws Exception {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
-        Context wrapper = Poster.post(uri, payload, new DefaultPostFactory());
+        Context wrapper = Poster.post(uri, payload, new DefaultPostFactory(entityBuilder));
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -186,7 +202,7 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory(), null);
+        Context wrapper = Poster.post(uri, payload, testState, new DefaultPostFactory(entityBuilder), null);
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -216,7 +232,7 @@ public class PosterIntegrationTest {
         DummyDto payload = createPayload();
         URI uri = server.buildGetRequestUri(HttpStatus.SC_OK);
         TestState testState = ApiTesterModule.createTestState();
-        Context wrapper = Poster.post(uri,payload,testState,createCustomHeaders());
+        Context wrapper = Poster.post(uri, payload, testState, createCustomHeaders());
         ApiResponse response = wrapper.apiResponse;
         ApiRequest request = wrapper.apiRequest;
         ApiTestUtil.assertOk(response);
@@ -259,11 +275,11 @@ public class PosterIntegrationTest {
         };
     }
 
-    private Map<String,String> createCustomHeaders() {
-    	Map<String, String> returnValue = new HashMap<String, String>();
-    	returnValue.put(HEADER_NAME1, HEADER_VALUE1);
-    	returnValue.put(HEADER_NAME2, HEADER_VALUE2);
-    	return returnValue;
+    private Map<String, String> createCustomHeaders() {
+        Map<String, String> returnValue = new HashMap<String, String>();
+        returnValue.put(HEADER_NAME1, HEADER_VALUE1);
+        returnValue.put(HEADER_NAME2, HEADER_VALUE2);
+        return returnValue;
     }
 
     private DummyDto createPayload() {
