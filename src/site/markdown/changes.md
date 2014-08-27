@@ -3,6 +3,7 @@ CHANGES
 
 develop
 -------
+- string payload in requests is treated as text/plain now
 
 Version 0.7.0: 2014-01-09
 -------------------------
