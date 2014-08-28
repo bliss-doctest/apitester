@@ -1,8 +1,8 @@
 CHANGES
 =============
 
-develop
--------
+Version 0.7.1: 2014-08-28
+-------------------------
 - string payload in requests is treated as text/plain now
 
 Version 0.7.0: 2014-01-09
